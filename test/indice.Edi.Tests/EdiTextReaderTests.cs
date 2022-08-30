@@ -253,6 +253,35 @@ namespace indice.Edi.Tests
 
         [Fact]
         [Trait(Traits.Tag, "EDIFact")]
+        public void EdiFact_Paxlist_Segmenents_Only_Standard_Test() {
+            var grammar = EdiGrammar.NewEdiFact();
+            var interchange = default(PaxLst);
+            using (var stream = Helpers.GetResourceStream("individual_PAXLST.edi")) {
+                interchange = new EdiSerializer().Deserialize<PaxLst>(new StreamReader(stream), grammar);
+            }
+
+            var unbSegment = interchange.Header;
+
+            //Test Interchange de-serialization
+         //   Assert.Equal("UNOC", unbSegment.SyntaxIdentifier);
+         //   Assert.Equal(3, unbSegment.SyntaxVersion);
+            Assert.Equal("1234567891123", unbSegment.SenderId);
+            Assert.Equal("14", unbSegment.PartnerIDCodeQualifier);
+            Assert.Equal("7080005059275", unbSegment.RecipientId);
+            Assert.Equal("14", unbSegment.ParterIDCode);
+            Assert.Equal("SPOTMARKED", unbSegment.RoutingAddress);
+            Assert.Equal(new DateTime(2012, 10, 10, 11, 4, 0), unbSegment.DateOfPreparation);
+            Assert.Equal("HBQ001", unbSegment.ControlRef);
+
+          //  AssertQuote2Message(interchange.Message);
+
+            var unz = interchange.Footer;
+            Assert.Equal(1, unz.TrailerControlCount);
+            Assert.Equal("20101000064507", unz.TrailerControlReference);
+        }
+
+        [Fact]
+        [Trait(Traits.Tag, "EDIFact")]
         [Trait(Traits.Issue, "#45")]
         public void EdiFact_01_Segmenents_Only_Multi_Message_Test() {
             var grammar = EdiGrammar.NewEdiFact();
