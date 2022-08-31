@@ -34,18 +34,10 @@ namespace indice.Edi.Tests.Models
 
         public BGM2 BGM { get; set; }
 
-        public REF REF { get; set; }
-     //   public NAD_GR1 NAD_GP1 { get; set; }
-        public TDT_GR2 TDT_GR2 { get; set; }
+     //   public REF REF { get; set; }
+        public NAD_GR1 NAD_GP1 { get; set; }
+        public TDT_GR2 TDT_GR2 { get; set; }        
         public NAD_GR4 NAD_GR4 { get; set; }
-        public DTM2 DTM2 { get; set; }
-
-        public NAT NAT { get; set; }
-
-   //     
-        public REF REF2 { get; set; }
-        public ATT ATT { get; set; }
-        
         public CNT CNT { get; set; }
         public UNT UNT { get; set; }
     }
@@ -174,7 +166,7 @@ namespace indice.Edi.Tests.Models
         public string DocumentIdentifier { get; set; }
     }
 
-    [EdiSegmentGroup("REF")]
+    [EdiSegment, EdiPath("REF")]
     public class REF {
         [EdiValue("X(3)", Path = "REF/0/0", Mandatory = true)]
         public string ReferenceCodeQualifier { get; set; }
@@ -197,7 +189,7 @@ namespace indice.Edi.Tests.Models
         public string CommunicationAddresCodeQualifier { get; set; }
     }
 
-    [EdiSegmentGroup("DTM", SequenceEnd = "LOC")]
+    [EdiSegment, EdiPath("DTM"), EdiSegmentGroup("LOC", "DOC")]
     public class DTM2 // Level 3 | LOC | GP3
     {
         [EdiValue("X(3)", Path = "DTM/0/0", Mandatory = true)]
@@ -208,7 +200,7 @@ namespace indice.Edi.Tests.Models
         public string DateOrTimeOrPeriodFormatCode { get; set; }
     }
 
-    [EdiSegmentGroup("ATT", SequenceEnd = "DTM")]
+    [EdiSegment, EdiPath("ATT")]
     public class ATT // Level 2 | NAD | GP4
     {
         [EdiValue("X(3)", Path = "ATT/0/0", Mandatory = true)]
@@ -217,7 +209,7 @@ namespace indice.Edi.Tests.Models
         public string AttributeDescriptionCode { get; set; }
     }
 
-    [EdiSegmentGroup("LOC", SequenceEnd = "NAT")]
+    [EdiSegment, EdiPath("LOC"), EdiSegmentGroup("NAD", "DOC")]
     public class LOC2 // Level 2 | NAD | GP4
     {
         [EdiValue("X(125)", Path = "LOC/0/0", Mandatory = true)]
@@ -226,7 +218,8 @@ namespace indice.Edi.Tests.Models
         [EdiValue("X(35)", Path = "COM/1/0", Mandatory = false)]
         public string LocationNameCode { get; set; }
     }
-    [EdiSegment, EdiSegmentGroup("NAT")]
+
+    [EdiSegment, EdiPath("NAT")]
     public class NAT // Level 2 | NAD | GP4
     {
         [EdiValue("X(3)", Path = "NAT/0/0", Mandatory = true)]
@@ -235,7 +228,8 @@ namespace indice.Edi.Tests.Models
         [EdiValue("X(3)", Path = "NAT/1/0", Mandatory = false)]
         public string NationalityNameCode { get; set; }
     }
-    [EdiSegment, EdiSegmentGroup("CNT")]
+    [EdiSegment, EdiPath("CNT")]
+    //[EdiSegmentGroup("CNT", SequenceEnd = "TDT")]
     public class CNT // Level 0 
     {
         [EdiValue("X(3)", Path = "CNT/0/0", Mandatory = true)]
@@ -259,8 +253,10 @@ namespace indice.Edi.Tests.Models
 
 
     #region GR1 | Level 1
-  //  [EdiCondition("NAD")]
-    [EdiSegment, EdiSegmentGroup("NAD", "COM", SequenceEnd = "TDT")]
+    //  [EdiCondition("NAD")]
+     [EdiSegmentGroup("NAD", SequenceEnd = "TDT")]
+     [EdiCondition("MS", CheckFor = EdiConditionCheckType.Equal, Path = "NAD/0/0")]
+    //  [EdiSegment, EdiPath("NAD")]
     public class NAD_GR1 {
         [EdiValue("X(3)", Path = "NAD/0/0", Mandatory = true)]
         public string PartyFunctionCodeQualifier { get; set; }
@@ -288,7 +284,7 @@ namespace indice.Edi.Tests.Models
         public string MeansOfTransportJourneyIdentifier { get; set; }
         [EdiValue("X(17)", Path = "TDT/4/0")]
         public string CarrierIdentifier { get; set; }
-        public LOC_GR3 LOC_GR3 { get; set; }
+        public LOC_GR3[] LOC_GR3 { get; set; }
     }
     #endregion GR2
     #region GR3 | Level 2
@@ -298,14 +294,15 @@ namespace indice.Edi.Tests.Models
         [EdiValue("X(125)", Path = "LOC/0/0", Mandatory = true)]
         public string LocationFunctionCodeQualifier { get; set; }
 
-        [EdiValue("X(35)", Path = "COM/1/0", Mandatory = false)]
+        [EdiValue("X(35)", Path = "LOC/1/0", Mandatory = false)]
         public string LocationNameCode { get; set; }
         public DTM2 DTM { get; set; }
     }
     #endregion GR3
     #region GR4 | Level 1
   //  [EdiCondition("NAD", Path = "NAD_GR4/0/0")]
-    [EdiSegmentGroup("NAD", "DOC", SequenceEnd = "CNT")]
+    [EdiSegmentGroup("NAD", SequenceEnd = "CNT")]
+    [EdiCondition("FL", CheckFor = EdiConditionCheckType.Equal, Path = "NAD/0/0")]
     public class NAD_GR4
     {
         [EdiValue("X(3)", Path = "NAD/0/0", Mandatory = true)]
@@ -324,12 +321,16 @@ namespace indice.Edi.Tests.Models
         public string PostalIdentificationCode { get; set; }
         [EdiValue("X(3)", Path = "NAD/7/0", Mandatory = false)]
         public string CountryNameCode { get; set; }
-        public DOC_GR5 DOC_GR5 { get; set; }
+        public ATT[] ATT { get; set; }
+        public DTM2[] DTM { get; set; }
         public LOC2[] LOC { get; set; }
+        public NAT[] NAT { get; set; }
+        public REF[] REF { get; set; }
+        public DOC_GR5[] DOC_GR5 { get; set; }
     }
     #endregion GR4
     #region GR5 | Level 2
-    [EdiSegmentGroup("DOC", SequenceEnd = "DTN")]
+    [EdiSegmentGroup("DOC", SequenceEnd = "CNT")]
     public class DOC_GR5
     {
         [EdiValue("X(3)", Path = "DOC/0/0", Mandatory = false)]
@@ -340,12 +341,12 @@ namespace indice.Edi.Tests.Models
         public string CodeListresponsibleAgencyCode { get; set; }
         [EdiValue("X(35)", Path = "DOC/1/0", Mandatory = false)]
         public string DocumentIdentifier { get; set; }
-        public DTM2 DTM2 { get; set; }
-        public LOC2 LOC2 { get; set; }
+        public DTM2[] DTM3 { get; set; }
+        public LOC2[] LOC3 { get; set; }
     }
     #endregion GR5
     #region Footer
-    [EdiSegment, EdiSegmentGroup("UNZ")]
+    [EdiSegment, EdiPath("UNZ")]
     public class UNZ
     {
         [EdiValue("9(6)", Path = "UNZ/0")]
