@@ -253,11 +253,11 @@ namespace indice.Edi.Tests
         public void EdiFact_Paxlist_Segmenents_Only_Standard_Test() {
             var grammar = EdiGrammar.NewEdiFact();
             var interchange = default(PaxLst);
-            using (var stream = Helpers.GetResourceStream("1A1D.edi")) {
+            using (var stream = Helpers.GetResourceStream("individual_PAXLST.edi")) {
                 interchange = new EdiSerializer().Deserialize<PaxLst>(new StreamReader(stream), grammar);
             }
 
-            var unbSegment = interchange.Header;
+            var unbSegment = interchange.UNB_Header;
 
             //Test Interchange de-serialization
             //   Assert.Equal("UNOC", unbSegment.SyntaxIdentifier);
