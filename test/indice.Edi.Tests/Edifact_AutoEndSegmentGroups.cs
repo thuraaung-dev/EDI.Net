@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using indice.Edi.Tests.Models;
 using Xunit;
@@ -16,7 +15,7 @@ namespace indice.Edi.Tests
             var interchange = default(AutoEndSegmentGroups);
 
             using (var stream = Helpers.GetResourceStream("edifact.AutoEndSegmentGroups.edi")) {
-                var serializer = new EdiSerializer {AutoEndSegmentGroups = true};
+                var serializer = new EdiSerializer { AutoEndSegmentGroups = true };
                 interchange = serializer.Deserialize<AutoEndSegmentGroups>(new StreamReader(stream), grammar);
             }
 

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace indice.Edi
 {
@@ -27,10 +25,11 @@ namespace indice.Edi
         /// <param name="formatType"></param>
         /// <returns></returns>
         public object GetFormat(Type formatType) {
-            if (formatType == typeof(ICustomFormatter))
+            if (formatType == typeof(ICustomFormatter)) {
                 return this;
-            else
+            } else {
                 return null;
+            }
         }
 
         /// <summary>
@@ -42,20 +41,22 @@ namespace indice.Edi
         /// <returns></returns>
         public string Format(string fmt, object arg, IFormatProvider formatProvider) {
             // Provide default formatting if arg is not an Int64. 
-            if (arg.GetType() != typeof(EdiPath))
+            if (arg.GetType() != typeof(EdiPath)) {
                 try {
                     return HandleOtherFormats(fmt, arg);
                 } catch (FormatException e) {
                     throw new FormatException(string.Format("The format of '{0}' is invalid.", fmt), e);
                 }
+            }
 
             // Provide default formatting for unsupported format strings. 
-            if (!(availableFormatStrings.Any(s => s == fmt) || string.IsNullOrWhiteSpace(fmt)))
+            if (!(availableFormatStrings.Any(s => s == fmt) || string.IsNullOrWhiteSpace(fmt))) {
                 try {
                     return HandleOtherFormats(fmt, arg);
                 } catch (FormatException e) {
                     throw new FormatException(string.Format("The format of '{0}' is invalid.", fmt), e);
                 }
+            }
 
             var culture = formatProvider as CultureInfo ?? CultureInfo.CurrentCulture;
             var path = (EdiPath)arg;
@@ -90,15 +91,60 @@ namespace indice.Edi
                     break;
             }
             return string.Format(mask, path.Segment, path.Element.HasValue ? path.Element.Value : "0", path.Component.HasValue ? path.Component.Value : "0");
+
+            /* Unmerged change from project 'indice.Edi (netstandard1.3)'
+            Before:
+                    }
+
+                    private string HandleOtherFormats(string format, object arg) {
+            After:
+                    }
+
+                    private string HandleOtherFormats(string format, object arg) {
+            */
+
+            /* Unmerged change from project 'indice.Edi (netstandard1.0)'
+            Before:
+                    }
+
+                    private string HandleOtherFormats(string format, object arg) {
+            After:
+                    }
+
+                    private string HandleOtherFormats(string format, object arg) {
+            */
+
+            /* Unmerged change from project 'indice.Edi (netstandard2.0)'
+            Before:
+                    }
+
+                    private string HandleOtherFormats(string format, object arg) {
+            After:
+                    }
+
+                    private string HandleOtherFormats(string format, object arg) {
+            */
+
+            /* Unmerged change from project 'indice.Edi (net5.0)'
+            Before:
+                    }
+
+                    private string HandleOtherFormats(string format, object arg) {
+            After:
+                    }
+
+                    private string HandleOtherFormats(string format, object arg) {
+            */
         }
-        
+
         private string HandleOtherFormats(string format, object arg) {
-            if (arg is IFormattable)
+            if (arg is IFormattable) {
                 return ((IFormattable)arg).ToString(format, CultureInfo.CurrentCulture);
-            else if (arg != null)
+            } else if (arg != null) {
                 return arg.ToString();
-            else
+            } else {
                 return string.Empty;
+            }
         }
     }
 

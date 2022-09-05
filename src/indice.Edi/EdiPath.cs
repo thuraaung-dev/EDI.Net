@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace indice.Edi
 {
@@ -14,7 +10,7 @@ namespace indice.Edi
     {
 
         private const string PARSE_PATTERN = @"^([A-Z]{1}[A-Z0-9]{1,3}|\*)?([\[\/]{1}([\d\.\*]+)\]?)?([\[\/]{1}(\d+?|\*)\]?)?$"; // supports both "STX/2/1 and STX[2][1]"
-                                             
+
         private readonly EdiPathFragment _SegmentPart;
         private readonly EdiPathFragment _ElementPart;
         private readonly EdiPathFragment _ComponentPart;
@@ -58,8 +54,8 @@ namespace indice.Edi
         /// constructs an <see cref="EdiPath"/> given the <paramref name="segment"/> name. Componet and Element idexes default to zero.
         /// </summary>
         /// <param name="segment">The <see cref="EdiContainerType.Segment"/> name</param>
-        public EdiPath(EdiPathFragment segment) : this (segment, (EdiPathFragment)0, (EdiPathFragment)0) {
-            
+        public EdiPath(EdiPathFragment segment) : this(segment, (EdiPathFragment)0, (EdiPathFragment)0) {
+
         }
 
         /// <summary>
@@ -68,7 +64,7 @@ namespace indice.Edi
         /// <param name="segment">The <see cref="EdiContainerType.Segment"/> name</param>
         /// <param name="element">Zero based index of the <see cref="EdiContainerType.Element"/> location inside the <seealso cref="EdiContainerType.Segment"/></param>
         public EdiPath(EdiPathFragment segment, EdiPathFragment element) : this(segment, element, (EdiPathFragment)0) {
-            
+
         }
 
         /// <summary>
@@ -81,8 +77,52 @@ namespace indice.Edi
             _SegmentPart = segment;
             _ElementPart = element;
             _ComponentPart = component;
+
+            /* Unmerged change from project 'indice.Edi (netstandard1.3)'
+            Before:
+                    }
+
+                    /// <summary>
+            After:
+                    }
+
+                    /// <summary>
+            */
+
+            /* Unmerged change from project 'indice.Edi (netstandard1.0)'
+            Before:
+                    }
+
+                    /// <summary>
+            After:
+                    }
+
+                    /// <summary>
+            */
+
+            /* Unmerged change from project 'indice.Edi (netstandard2.0)'
+            Before:
+                    }
+
+                    /// <summary>
+            After:
+                    }
+
+                    /// <summary>
+            */
+
+            /* Unmerged change from project 'indice.Edi (net5.0)'
+            Before:
+                    }
+
+                    /// <summary>
+            After:
+                    }
+
+                    /// <summary>
+            */
         }
-        
+
         /// <summary>
         /// Returns the hash code for the <see cref="EdiPath"/>
         /// </summary>
@@ -108,10 +148,12 @@ namespace indice.Edi
         public override bool Equals(object obj) {
             if (obj != null && (obj is EdiPath || obj is string)) {
                 var other = default(EdiPath);
-                if (obj is EdiPath)
+                if (obj is EdiPath) {
                     other = (EdiPath)obj;
-                else
+                } else {
                     other = (EdiPath)(string)obj;
+                }
+
                 return Equals(other);
             }
             return base.Equals(obj);
@@ -122,7 +164,7 @@ namespace indice.Edi
         /// </summary>
         /// <returns></returns>
         public override string ToString() {
-            return ToString("C", null); 
+            return ToString("C", null);
         }
 
         /// <summary>
@@ -180,8 +222,14 @@ namespace indice.Edi
         /// <returns></returns>
         public int CompareTo(EdiPath other) {
             var result = Segment.CompareTo(other.Segment);
-            if (result == 0) result = Element.CompareTo(other.Element);
-            if (result == 0) result = Component.CompareTo(other.Component);
+            if (result == 0) {
+                result = Element.CompareTo(other.Element);
+            }
+
+            if (result == 0) {
+                result = Component.CompareTo(other.Component);
+            }
+
             return result;
         }
 
@@ -189,7 +237,7 @@ namespace indice.Edi
         /// Implicit cast operator from <see cref="EdiPath"/> to <seealso cref="string"/>
         /// </summary>
         /// <param name="value"></param>
-        public static implicit operator string (EdiPath value) {
+        public static implicit operator string(EdiPath value) {
             return value.ToString();
         }
 

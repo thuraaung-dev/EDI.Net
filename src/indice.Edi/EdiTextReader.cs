@@ -1,12 +1,40 @@
-﻿using indice.Edi.Utilities;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
+using indice.Edi.Utilities;
+/* Unmerged change from project 'indice.Edi (netstandard1.3)'
+Before:
 using System.Threading.Tasks;
+After:
+using System.Threading.Tasks;
+using indice.Edi.Utilities;
+*/
+
+/* Unmerged change from project 'indice.Edi (netstandard1.0)'
+Before:
+using System.Threading.Tasks;
+After:
+using System.Threading.Tasks;
+using indice.Edi.Utilities;
+*/
+
+/* Unmerged change from project 'indice.Edi (netstandard2.0)'
+Before:
+using System.Threading.Tasks;
+After:
+using System.Threading.Tasks;
+using indice.Edi.Utilities;
+*/
+
+/* Unmerged change from project 'indice.Edi (net5.0)'
+Before:
+using System.Threading.Tasks;
+After:
+using System.Threading.Tasks;
+using indice.Edi.Utilities;
+*/
+
 
 namespace indice.Edi
 {
@@ -34,8 +62,10 @@ namespace indice.Edi
         /// <param name="grammar">The <see cref="IEdiGrammar"/></param>
         public EdiTextReader(TextReader reader, IEdiGrammar grammar)
             : base(grammar) {
-            if (null == reader)
+            if (null == reader) {
                 throw new ArgumentNullException(nameof(reader));
+            }
+
             _reader = reader;
             _lineNumber = 1;
             _chars = new char[1025];
@@ -54,7 +84,7 @@ namespace indice.Edi
             }
             return true;
         }
-        
+
         /// <summary>
         /// Reads the next EDI token from the stream as a <see cref="Nullable{Decimal}"/>.
         /// </summary>
@@ -80,9 +110,9 @@ namespace indice.Edi
         }
 
         /// <summary>
-        /// Reads the next EDI token from the stream as a <see cref="String"/>.
+        /// Reads the next EDI token from the stream as a <see cref="string"/>.
         /// </summary>
-        /// <returns>A <see cref="String"/>. This method will return <c>null</c> at the end of an array.</returns>
+        /// <returns>A <see cref="string"/>. This method will return <c>null</c> at the end of an array.</returns>
         public override string ReadAsString() {
             return ReadAsStringInternal();
         }
@@ -90,11 +120,11 @@ namespace indice.Edi
         /// <summary>
         /// Reads the next EDI token from the stream as a <see cref="Nullable{DateTime}"/>.
         /// </summary>
-        /// <returns>A <see cref="String"/>. This method will return <c>null</c> at the end of an array.</returns>
+        /// <returns>A <see cref="string"/>. This method will return <c>null</c> at the end of an array.</returns>
         public override DateTime? ReadAsDateTime() {
             return ReadAsDateTimeInternal();
         }
-        
+
         internal override bool ReadInternal() {
             while (true) {
                 switch (_currentState) {
@@ -112,8 +142,10 @@ namespace indice.Edi
                     case State.PostValue:
                         // returns true if it hits
                         // end of object or array
-                        if (ParsePostValue())
+                        if (ParsePostValue()) {
                             return true;
+                        }
+
                         break;
                     case State.Finished:
                         if (EnsureChars(0, false)) {
@@ -134,7 +166,7 @@ namespace indice.Edi
 
         private bool ParsePostValue() {
             while (true) {
-                char currentChar = _chars[_charPos];
+                var currentChar = _chars[_charPos];
 
                 switch (currentChar) {
                     case ' ':
@@ -189,10 +221,11 @@ namespace indice.Edi
         }
 
         private bool ParseServiceStringAdvice() {
-            if (!string.IsNullOrEmpty(Grammar.ServiceStringAdviceTag) && 
+            if (!string.IsNullOrEmpty(Grammar.ServiceStringAdviceTag) &&
                 '\0' == _chars[_charPos]) {
-                if (ReadData(false, 9) == 0)
+                if (ReadData(false, 9) == 0) {
                     return false;
+                }
 
                 var segmentName = new char[3];
                 Array.Copy(_chars, _charPos, segmentName, 0, 3);
@@ -209,13 +242,14 @@ namespace indice.Edi
 
         private bool ParseSegment() {
             while (true) {
-                char currentChar = _chars[_charPos];
+                var currentChar = _chars[_charPos];
 
                 switch (currentChar) {
                     case '\0':
                         if (_charsUsed == _charPos) {
-                            if (ReadData(false) == 0)
+                            if (ReadData(false) == 0) {
                                 return false;
+                            }
                         } else {
                             _charPos++;
                         }
@@ -260,7 +294,7 @@ namespace indice.Edi
             }
         }
         private bool ParseSegmentName() {
-            char firstChar = _chars[_charPos];
+            var firstChar = _chars[_charPos];
             ShiftBufferIfNeeded();
             ReadStringIntoBuffer();
 
@@ -268,16 +302,18 @@ namespace indice.Edi
             if (NameTable != null) {
                 segmentName = NameTable.Get(_stringReference.Chars, _stringReference.StartIndex, _stringReference.Length);
                 // no match in name table
-                if (segmentName == null)
+                if (segmentName == null) {
                     segmentName = _stringReference.ToString();
+                }
             } else {
                 segmentName = _stringReference.ToString();
             }
             EatWhitespace(false);
 
-            if (Grammar.SegmentNameDelimiter != _chars[_charPos] && Grammar.SegmentTerminator != _chars[_charPos])
+            if (Grammar.SegmentNameDelimiter != _chars[_charPos] && Grammar.SegmentTerminator != _chars[_charPos]) {
                 throw EdiReaderException.Create(this, "Invalid character after parsing segment name. Expected '{1}' but got: {0}.".FormatWith(CultureInfo.InvariantCulture, _chars[_charPos], string.Join("', '", Grammar.DataElementSeparator)));
-            
+            }
+
             SetToken(EdiToken.SegmentName, segmentName);
 
             ClearRecentString();
@@ -286,13 +322,14 @@ namespace indice.Edi
 
         private bool ParseValue() {
             while (true) {
-                char currentChar = _chars[_charPos];
+                var currentChar = _chars[_charPos];
 
                 switch (currentChar) {
                     case '\0':
                         if (_charsUsed == _charPos) {
-                            if (ReadData(false) == 0)
+                            if (ReadData(false) == 0) {
                                 return false;
+                            }
                         } else {
                             _charPos++;
                         }
@@ -347,8 +384,9 @@ namespace indice.Edi
         /// </value>
         public int LineNumber {
             get {
-                if (CurrentState == State.Start && LinePosition == 0)
+                if (CurrentState == State.Start && LinePosition == 0) {
                     return 0;
+                }
 
                 return _lineNumber;
             }
@@ -373,8 +411,9 @@ namespace indice.Edi
 #endif
 
         private void ClearRecentString() {
-            if (_buffer != null)
+            if (_buffer != null) {
                 _buffer.Position = 0;
+            }
 
             _stringReference = new StringReference();
         }
@@ -399,7 +438,7 @@ namespace indice.Edi
             ReadStringIntoBuffer();
             SetPostValueState();
 
-            string text = _stringReference.ToString();
+            var text = _stringReference.ToString();
             SetToken(forceNull ? EdiToken.Null : EdiToken.String, forceNull ? null : text, false);
 
             ClearRecentString();
@@ -415,11 +454,12 @@ namespace indice.Edi
         private void ShiftBufferIfNeeded() {
             // once in the last 10% of the buffer shift the remaining content to the start to avoid
             // unnessesarly increasing the buffer size when reading numbers/strings
-            int length = _chars.Length;
+            var length = _chars.Length;
             if (length - _charPos <= length * 0.1) {
-                int count = _charsUsed - _charPos;
-                if (count > 0)
+                var count = _charsUsed - _charPos;
+                if (count > 0) {
                     BlockCopyChars(_chars, _charPos, _chars, 0, count);
+                }
 
                 _lineStartPos -= _charPos;
                 _charPos = 0;
@@ -433,36 +473,39 @@ namespace indice.Edi
         }
 
         private int ReadData(bool append, int charsRequired) {
-            if (_isEndOfFile)
+            if (_isEndOfFile) {
                 return 0;
+            }
 
             // char buffer is full
             if (_charsUsed + charsRequired >= _chars.Length - 1) {
                 if (append) {
                     // copy to new array either double the size of the current or big enough to fit required content
-                    int newArrayLength = Math.Max(_chars.Length * 2, _charsUsed + charsRequired + 1);
+                    var newArrayLength = Math.Max(_chars.Length * 2, _charsUsed + charsRequired + 1);
 
                     // increase the size of the buffer
-                    char[] dst = new char[newArrayLength];
+                    var dst = new char[newArrayLength];
 
                     BlockCopyChars(_chars, 0, dst, 0, _chars.Length);
 
                     _chars = dst;
                 } else {
-                    int remainingCharCount = _charsUsed - _charPos;
+                    var remainingCharCount = _charsUsed - _charPos;
 
                     if (remainingCharCount + charsRequired + 1 >= _chars.Length) {
                         // the remaining count plus the required is bigger than the current buffer size
-                        char[] dst = new char[remainingCharCount + charsRequired + 1];
+                        var dst = new char[remainingCharCount + charsRequired + 1];
 
-                        if (remainingCharCount > 0)
+                        if (remainingCharCount > 0) {
                             BlockCopyChars(_chars, _charPos, dst, 0, remainingCharCount);
+                        }
 
                         _chars = dst;
                     } else {
                         // copy any remaining data to the beginning of the buffer if needed and reset positions
-                        if (remainingCharCount > 0)
+                        if (remainingCharCount > 0) {
                             BlockCopyChars(_chars, _charPos, _chars, 0, remainingCharCount);
+                        }
                     }
 
                     _lineStartPos -= _charPos;
@@ -471,55 +514,61 @@ namespace indice.Edi
                 }
             }
 
-            int attemptCharReadCount = _chars.Length - _charsUsed - 1;
+            var attemptCharReadCount = _chars.Length - _charsUsed - 1;
 
-            int charsRead = _reader.Read(_chars, _charsUsed, attemptCharReadCount);
+            var charsRead = _reader.Read(_chars, _charsUsed, attemptCharReadCount);
 
             _charsUsed += charsRead;
 
-            if (charsRead == 0)
+            if (charsRead == 0) {
                 _isEndOfFile = true;
+            }
 
             _chars[_charsUsed] = '\0';
             return charsRead;
         }
 
         private bool EnsureChars(int relativePosition, bool append) {
-            if (_charPos + relativePosition >= _charsUsed)
+            if (_charPos + relativePosition >= _charsUsed) {
                 return ReadChars(relativePosition, append);
+            }
 
             return true;
         }
 
         private bool ReadChars(int relativePosition, bool append) {
-            if (_isEndOfFile)
+            if (_isEndOfFile) {
                 return false;
+            }
 
-            int charsRequired = _charPos + relativePosition - _charsUsed + 1;
+            var charsRequired = _charPos + relativePosition - _charsUsed + 1;
 
-            int totalCharsRead = 0;
+            var totalCharsRead = 0;
 
             // it is possible that the TextReader doesn't return all data at once
             // repeat read until the required text is returned or the reader is out of content
             do {
-                int charsRead = ReadData(append, charsRequired - totalCharsRead);
+                var charsRead = ReadData(append, charsRequired - totalCharsRead);
 
                 // no more content
-                if (charsRead == 0)
+                if (charsRead == 0) {
                     break;
+                }
 
                 totalCharsRead += charsRead;
             } while (totalCharsRead < charsRequired);
 
-            if (totalCharsRead < charsRequired)
+            if (totalCharsRead < charsRequired) {
                 return false;
+            }
+
             return true;
         }
 
         private void ReadStringIntoBuffer() {
-            int charPos = _charPos;
-            int initialPosition = _charPos;
-            int lastWritePosition = _charPos;
+            var charPos = _charPos;
+            var initialPosition = _charPos;
+            var lastWritePosition = _charPos;
             StringBuffer buffer = null;
             while (true) {
                 var charAt = _chars[charPos++];
@@ -542,9 +591,9 @@ namespace indice.Edi
                     }
 
                     // start of escape sequence
-                    int escapeStartPos = charPos - 1;
+                    var escapeStartPos = charPos - 1;
 
-                    char currentChar = _chars[charPos];
+                    var currentChar = _chars[charPos];
 
                     char writeChar;
 
@@ -553,14 +602,16 @@ namespace indice.Edi
                         writeChar = currentChar;
                     } else {
                         charPos++;
-                        _charPos = charPos; 
+                        _charPos = charPos;
                         writeChar = currentChar;
-                        if (!SuppressBadEscapeSequenceErrors)
+                        if (!SuppressBadEscapeSequenceErrors) {
                             throw EdiReaderException.Create(this, "Bad EDI escape sequence: {0}{1}.".FormatWith(CultureInfo.InvariantCulture, Grammar.ReleaseCharacter, currentChar));
+                        }
                     }
-                    
-                    if (buffer == null)
+
+                    if (buffer == null) {
                         buffer = GetBuffer();
+                    }
 
                     WriteCharToBuffer(buffer, writeChar, lastWritePosition, escapeStartPos);
 
@@ -581,11 +632,13 @@ namespace indice.Edi
                     if (initialPosition == lastWritePosition) {
                         _stringReference = new StringReference(_chars, initialPosition, charPos - initialPosition);
                     } else {
-                        if (buffer == null)
+                        if (buffer == null) {
                             buffer = GetBuffer();
+                        }
 
-                        if (charPos > lastWritePosition)
+                        if (charPos > lastWritePosition) {
                             buffer.Append(_chars, lastWritePosition, charPos - lastWritePosition);
+                        }
 
                         _stringReference = new StringReference(buffer.GetInternalBuffer(), 0, buffer.Position);
                     }
@@ -607,8 +660,8 @@ namespace indice.Edi
         private char ParseUnicode() {
             char writeChar;
             if (EnsureChars(4, true)) {
-                string hexValues = new string(_chars, _charPos, 4);
-                char hexChar = Convert.ToChar(int.Parse(hexValues, NumberStyles.HexNumber, NumberFormatInfo.InvariantInfo));
+                var hexValues = new string(_chars, _charPos, 4);
+                var hexChar = Convert.ToChar(int.Parse(hexValues, NumberStyles.HexNumber, NumberFormatInfo.InvariantInfo));
                 writeChar = hexChar;
 
                 _charPos += 4;
@@ -619,14 +672,14 @@ namespace indice.Edi
         }
 
         private void ProcessLineFeed(bool forwardPosition = true) {
-            if (forwardPosition) { 
+            if (forwardPosition) {
                 _charPos++;
             }
             OnNewLine(_charPos);
         }
 
         private void ProcessCarriageReturn(bool append, bool forwardPosition = true) {
-            if (!forwardPosition) { 
+            if (!forwardPosition) {
                 return;
             }
             _charPos++;
@@ -640,16 +693,17 @@ namespace indice.Edi
         }
 
         private bool EatWhitespace(bool oneOrMore) {
-            bool finished = false;
-            bool ateWhitespace = false;
+            var finished = false;
+            var ateWhitespace = false;
             while (!finished) {
-                char currentChar = _chars[_charPos];
+                var currentChar = _chars[_charPos];
 
                 switch (currentChar) {
                     case '\0':
                         if (_charsUsed == _charPos) {
-                            if (ReadData(false) == 0)
+                            if (ReadData(false) == 0) {
                                 finished = true;
+                            }
                         } else {
                             _charPos++;
                         }

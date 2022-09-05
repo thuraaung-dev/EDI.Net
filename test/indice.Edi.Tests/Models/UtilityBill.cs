@@ -1,8 +1,7 @@
-﻿using indice.Edi.Serialization;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using indice.Edi.Serialization;
 
 namespace indice.Edi.Tests.Models
 {
@@ -96,7 +95,7 @@ namespace indice.Edi.Tests.Models
     [EdiSegment, EdiPath("CCD")]
     public class ConsumptionChargeCharge
     {
-        
+
         [EdiValue("9(1)", Path = "CCD/0")]
         public int SequenceNumber { get; set; }
 
@@ -164,7 +163,7 @@ namespace indice.Edi.Tests.Models
 
         [EdiValue("X(6)", Path = "CCD/10/1", Description = "CONS")]
         public string UnitOfMeasureBilling { get; set; }
-        
+
         private string _UnitsNegativeBilling;
         [EdiValue("X(4)", Path = "CCD/10/2", Description = "CONS")]
         public string UnitsNegativeBilling {
@@ -183,7 +182,7 @@ namespace indice.Edi.Tests.Models
 
         [EdiValue("X(6)", Path = "CCD/11/1", Description = "CONB")]
         public string UnitOfMeasureBase { get; set; }
-        
+
         private string _UnitsNegativeBase;
         [EdiValue("X(4)", Path = "CCD/11/2", Description = "CONB")]
         public string UnitsNegativeBase {
@@ -212,7 +211,7 @@ namespace indice.Edi.Tests.Models
 
         [EdiValue("X(6)", Path = "CCD/13/1", Description = "CONA")]
         public string UnitOfMeasureAdjusted { get; set; }
-        
+
         [EdiValue("X(4)", Path = "CCD/13/2", Description = "CONA")]
         public string NegativeIndicatorAdjusted { get; set; }
 
@@ -226,7 +225,7 @@ namespace indice.Edi.Tests.Models
 
         [EdiValue("X(6)", Path = "CCD/15/1", Description = "NUCT")]
         public string UnitOfMeasureBilled { get; set; }
-       
+
         [EdiValue("X(4)", Path = "CCD/15/2", Description = "NUCT")]
         public string NegativeIndicatorBilled { get; set; }
 
@@ -293,7 +292,7 @@ namespace indice.Edi.Tests.Models
     [EdiSegment, EdiPath("MAN")]
     public class MetetAdminNumber
     {
-        static Dictionary<string, string> _distributorsIdentifier = new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> _distributorsIdentifier = new Dictionary<string, string>();
         public MetetAdminNumber() {
             if (_distributorsIdentifier == null || _distributorsIdentifier.Count() == 0) {
                 _distributorsIdentifier.Add("10", "Eastern Electricity");
@@ -323,11 +322,11 @@ namespace indice.Edi.Tests.Models
         public string DistributorIdentifier { get; set; }
         public string DistributorName {
             get {
-                if (_distributorsIdentifier.ContainsKey(DistributorIdentifier))
+                if (_distributorsIdentifier.ContainsKey(DistributorIdentifier)) {
                     return _distributorsIdentifier[DistributorIdentifier];
-                else
+                } else {
                     throw new ArgumentOutOfRangeException(DistributorIdentifier, "Unregistered distributor identifier");
-
+                }
             }
         }
 

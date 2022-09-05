@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace indice.Edi.Serialization
+﻿namespace indice.Edi.Serialization
 {
     /// <summary>
     /// Base class for all structure difining attributes 

@@ -1,9 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+
+/* Unmerged change from project 'indice.Edi (netstandard1.3)'
+Before:
 using System.Linq;
-using System.Threading.Tasks;
-using indice.Edi.Utilities;
+After:
 using System.Globalization;
+using System.Linq;
+*/
+
+/* Unmerged change from project 'indice.Edi (netstandard1.0)'
+Before:
+using System.Linq;
+After:
+using System.Globalization;
+using System.Linq;
+*/
+
+/* Unmerged change from project 'indice.Edi (netstandard2.0)'
+Before:
+using System.Linq;
+After:
+using System.Globalization;
+using System.Linq;
+*/
+
+/* Unmerged change from project 'indice.Edi (net5.0)'
+Before:
+using System.Linq;
+After:
+using System.Globalization;
+using System.Linq;
+*/
+using System.Globalization;
+using System.Linq;
+using indice.Edi.Utilities;
 
 namespace indice.Edi.Serialization
 {
@@ -11,14 +41,18 @@ namespace indice.Edi.Serialization
     internal static class ReadQueueExtensions
     {
         public static bool ContainsPath(this Queue<EdiEntry> queue, string path) {
-            if (string.IsNullOrWhiteSpace(path) || queue.Count == 0)
+            if (string.IsNullOrWhiteSpace(path) || queue.Count == 0) {
                 return false;
+            }
+
             return queue.Any(entry => entry.Token.IsPrimitiveToken() && EdiPath.Parse(path).Equals(entry.Path));
         }
 
         public static string ReadAsString(this Queue<EdiEntry> queue, string path) {
-            if (!ContainsPath(queue, path))
+            if (!ContainsPath(queue, path)) {
                 return null;
+            }
+
             while (queue.Count > 0) {
                 var entry = queue.Dequeue();
                 if (entry.Token.IsPrimitiveToken() && EdiPath.Parse(path).Equals(entry.Path)) {
@@ -33,11 +67,11 @@ namespace indice.Edi.Serialization
             if (text != null) {
                 text = text.TrimStart('Z'); // Z suppresses leading zeros
             }
-            if (string.IsNullOrEmpty(text))
+            if (string.IsNullOrEmpty(text)) {
                 return null;
+            }
 
-            var integer = default(int);
-            if (!int.TryParse(text, NumberStyles.Integer, culture ?? CultureInfo.InvariantCulture, out integer)) {
+            if (!int.TryParse(text, NumberStyles.Integer, culture ?? CultureInfo.InvariantCulture, out var integer)) {
                 throw new EdiException("Cannot parse int from string '{0}'. Path {1}".FormatWith(culture, text, path));
             }
             return integer;
@@ -48,11 +82,11 @@ namespace indice.Edi.Serialization
             if (text != null) {
                 text = text.TrimStart('Z'); // Z suppresses leading zeros
             }
-            if (string.IsNullOrEmpty(text))
+            if (string.IsNullOrEmpty(text)) {
                 return null;
+            }
 
-            var integer = default(long);
-            if (!long.TryParse(text, NumberStyles.Integer, culture ?? CultureInfo.InvariantCulture, out integer)) {
+            if (!long.TryParse(text, NumberStyles.Integer, culture ?? CultureInfo.InvariantCulture, out var integer)) {
                 throw new EdiException("Cannot parse int from string '{0}'. Path {1}".FormatWith(culture, text, path));
             }
             return integer;
@@ -60,9 +94,10 @@ namespace indice.Edi.Serialization
 
         public static decimal? ReadAsDecimal(this Queue<EdiEntry> queue, string path, Picture? picture, char? decimalMark) {
             var text = ReadAsString(queue, path);
-            if (string.IsNullOrEmpty(text))
+            if (string.IsNullOrEmpty(text)) {
                 return null;
-            
+            }
+
             return text.Parse(picture, decimalMark);
         }
     }

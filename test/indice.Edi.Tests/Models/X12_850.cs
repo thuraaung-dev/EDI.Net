@@ -1,8 +1,6 @@
-﻿using indice.Edi.Serialization;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using indice.Edi.Serialization;
 
 namespace indice.Edi.Tests.Models
 {
@@ -67,7 +65,7 @@ namespace indice.Edi.Tests.Models
         public int TrailerControlNumber { get; set; }
 
         #endregion
-        
+
         public List<FunctionalGroup> Groups { get; set; }
 
         [EdiGroup]
@@ -123,7 +121,7 @@ namespace indice.Edi.Tests.Models
             public int SegmentsCounts { get; set; }
 
             [EdiValue("X(9)", Path = "SE/1", Description = "SE02 - Transaction set control number (same as ST02)")]
-            public string TrailerTransactionSetControlNumber { get; set; } 
+            public string TrailerTransactionSetControlNumber { get; set; }
             #endregion
 
             [EdiValue("X(2)", Path = "BEG/0", Description = "BEG01 - Trans. Set Purpose Code")]
@@ -174,7 +172,7 @@ namespace indice.Edi.Tests.Models
             public List<Address> Addresses { get; set; }
 
             public List<OrderDetail> Items { get; set; }
-            
+
             [EdiValue(Path = "AMT/1", Description = "AMT02 - Total amount of the Purchase Order")]
             public string TotalTransactionAmount { get; set; }
 
@@ -211,7 +209,7 @@ namespace indice.Edi.Tests.Models
             public DTM AvailableFromDate { get; set; }
 
             [EdiCondition("067", Path = "DTM/0/0")]
-            public DTM ArrivalDate  { get; set; }
+            public DTM ArrivalDate { get; set; }
 
             [EdiCondition("002", Path = "DTM/0/0")]
             public DTM DeliveryRequestedDate { get; set; }

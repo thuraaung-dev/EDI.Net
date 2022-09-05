@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using indice.Edi.Serialization;
 
 namespace indice.Edi.Tests.Models
 {
-    class InheritSegmentGroup
+    internal class InheritSegmentGroup
     {
         public List<Message> Messages { get; set; }
 

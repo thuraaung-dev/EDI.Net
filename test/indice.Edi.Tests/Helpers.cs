@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace indice.Edi.Tests
 {
@@ -13,7 +10,7 @@ namespace indice.Edi.Tests
         private static readonly Assembly _assembly = typeof(EdiTextReaderTests).GetTypeInfo().Assembly;
         public static Stream GetResourceStream(string fileName) {
             var qualifiedResources = _assembly.GetManifestResourceNames().OrderBy(x => x).ToArray();
-            Stream stream = _assembly.GetManifestResourceStream("indice.Edi.Tests.Samples." + fileName);
+            var stream = _assembly.GetManifestResourceStream("indice.Edi.Tests.Samples." + fileName);
             return stream;
         }
 

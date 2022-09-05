@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using indice.Edi.Tests.Models;
 using Xunit;
 
@@ -334,16 +332,18 @@ namespace indice.Edi.Tests
 
             var order = new PurchaseOrder_850.Order();
             eightFifty.Groups = new List<PurchaseOrder_850.FunctionalGroup>();
-            var group = new PurchaseOrder_850.FunctionalGroup();
-            group.Orders = new List<PurchaseOrder_850.Order>();
-            var order1 = new PurchaseOrder_850.Order();
-            order1.Items = new List<PurchaseOrder_850.OrderDetail>();
+            var group = new PurchaseOrder_850.FunctionalGroup {
+                Orders = new List<PurchaseOrder_850.Order>()
+            };
+            var order1 = new PurchaseOrder_850.Order {
+                Items = new List<PurchaseOrder_850.OrderDetail>()
+            };
             group.Orders.Add(order1);
 
             eightFifty.Groups.Add(group);
             eightFifty.Groups[0].Orders.Add(order);
 
-            int orderIndex = eightFifty.Groups[0].Orders.Count - 1;
+            var orderIndex = eightFifty.Groups[0].Orders.Count - 1;
 
             eightFifty.Groups[0].FunctionalIdentifierCode = "PO";
             eightFifty.Groups[0].ApplicationSenderCode = "test";
@@ -354,22 +354,27 @@ namespace indice.Edi.Tests
             eightFifty.Groups[0].AgencyCode = "X";
             eightFifty.Groups[0].Version = "test";
 
-            var detail = new PurchaseOrder_850.OrderDetail();
-            detail.OrderLineNumber = "001";
-            detail.QuantityOrdered = 1;
-            detail.UnitPrice = 10;
+            var detail = new PurchaseOrder_850.OrderDetail {
+                OrderLineNumber = "001",
+                QuantityOrdered = 1,
+                UnitPrice = 10
+            };
 
-            var msg1 = new PurchaseOrder_850.MSG();
-            msg1.MessageText = "aaa1";
-            var msg2 = new PurchaseOrder_850.MSG();
-            msg2.MessageText = "bbb2";
-            var msg3 = new PurchaseOrder_850.MSG();
-            msg3.MessageText = "ccc3";
+            var msg1 = new PurchaseOrder_850.MSG {
+                MessageText = "aaa1"
+            };
+            var msg2 = new PurchaseOrder_850.MSG {
+                MessageText = "bbb2"
+            };
+            var msg3 = new PurchaseOrder_850.MSG {
+                MessageText = "ccc3"
+            };
 
-            detail.MSG = new List<PurchaseOrder_850.MSG>();
-            detail.MSG.Add(msg1);
-            detail.MSG.Add(msg2);
-            detail.MSG.Add(msg3);
+            detail.MSG = new List<PurchaseOrder_850.MSG> {
+                msg1,
+                msg2,
+                msg3
+            };
 
             eightFifty.Groups[0].Orders[0].Items.Add(detail);
 
@@ -420,9 +425,8 @@ namespace indice.Edi.Tests
         public void Serialize_RangeError_Issue190() {
             var grammar = EdiGrammar.NewEdiFact();
 
-            var ok = new EdiFact_Issue190.TIF
-            {
-                Names = new List<EdiFact_Issue190.GivenName> {"Hello", "World"}
+            var ok = new EdiFact_Issue190.TIF {
+                Names = new List<EdiFact_Issue190.GivenName> { "Hello", "World" }
             };
             var okResult = Serialize(ok);
             var okExpected = new StringBuilder().AppendLine("UNA:+.? '").AppendLine("TIF++Hello+World'").ToString();
@@ -430,12 +434,12 @@ namespace indice.Edi.Tests
 
             var bad = new EdiFact_Issue190.BUGGEDTIF {
                 Category = "ADT",
-                Names = new List<EdiFact_Issue190.GivenName> {"Hello", "World"}
+                Names = new List<EdiFact_Issue190.GivenName> { "Hello", "World" }
             };
             var badResult = Serialize(bad);
             var badExpected = new StringBuilder().AppendLine("UNA:+.? '").AppendLine("TIF+:ADT+Hello+World'").ToString();
             Assert.Equal(badExpected, badResult);
-            
+
             string Serialize<T>(T data) {
                 using var writer = new StringWriter();
                 new EdiSerializer().Serialize(writer, grammar, data);

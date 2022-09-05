@@ -86,14 +86,16 @@ namespace indice.Edi.Utilities
         public static bool IsVirtual(this PropertyInfo propertyInfo) {
             ValidationUtils.ArgumentNotNull(propertyInfo, "propertyInfo");
 
-            MethodInfo m = propertyInfo.GetGetMethod();
-            if (m != null && m.IsVirtual)
+            var m = propertyInfo.GetGetMethod();
+            if (m != null && m.IsVirtual) {
                 return true;
+            }
 
             m = propertyInfo.GetSetMethod();
 
-            if (m != null && m.IsVirtual)
+            if (m != null && m.IsVirtual) {
                 return true;
+            }
 
             return false;
         }
@@ -101,22 +103,27 @@ namespace indice.Edi.Utilities
         public static MethodInfo GetBaseDefinition(this PropertyInfo propertyInfo) {
             ValidationUtils.ArgumentNotNull(propertyInfo, "propertyInfo");
 
-            MethodInfo m = propertyInfo.GetGetMethod();
-            if (m != null)
+            var m = propertyInfo.GetGetMethod();
+            if (m != null) {
                 return m.GetBaseDefinition();
+            }
 
             m = propertyInfo.GetSetMethod();
-            if (m != null)
+            if (m != null) {
                 return m.GetBaseDefinition();
+            }
 
             return null;
         }
 
         public static bool IsPublic(PropertyInfo property) {
-            if (property.GetGetMethod() != null && property.GetGetMethod().IsPublic)
+            if (property.GetGetMethod() != null && property.GetGetMethod().IsPublic) {
                 return true;
-            if (property.GetSetMethod() != null && property.GetSetMethod().IsPublic)
+            }
+
+            if (property.GetSetMethod() != null && property.GetSetMethod().IsPublic) {
                 return true;
+            }
 
             return false;
         }
@@ -124,16 +131,16 @@ namespace indice.Edi.Utilities
         public static Type GetObjectType(object v) {
             return (v != null) ? v.GetType() : null;
         }
-        
+
 
         private static string RemoveAssemblyDetails(string fullyQualifiedTypeName) {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
 
             // loop through the type name and filter out qualified assembly details from nested type names
-            bool writingAssemblyName = false;
-            bool skippingAssemblyDetails = false;
-            for (int i = 0; i < fullyQualifiedTypeName.Length; i++) {
-                char current = fullyQualifiedTypeName[i];
+            var writingAssemblyName = false;
+            var skippingAssemblyDetails = false;
+            for (var i = 0; i < fullyQualifiedTypeName.Length; i++) {
+                var current = fullyQualifiedTypeName[i];
                 switch (current) {
                     case '[':
                         writingAssemblyName = false;
@@ -154,8 +161,10 @@ namespace indice.Edi.Utilities
                         }
                         break;
                     default:
-                        if (!skippingAssemblyDetails)
+                        if (!skippingAssemblyDetails) {
                             builder.Append(current);
+                        }
+
                         break;
                 }
             }
@@ -166,8 +175,9 @@ namespace indice.Edi.Utilities
         public static bool HasDefaultConstructor(Type t, bool nonPublic) {
             ValidationUtils.ArgumentNotNull(t, "t");
 
-            if (t.IsValueType())
+            if (t.IsValueType()) {
                 return true;
+            }
 
             return (GetDefaultConstructor(t, nonPublic) != null);
         }
@@ -177,9 +187,10 @@ namespace indice.Edi.Utilities
         }
 
         public static ConstructorInfo GetDefaultConstructor(Type t, bool nonPublic) {
-            BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public;
-            if (nonPublic)
+            var bindingFlags = BindingFlags.Instance | BindingFlags.Public;
+            if (nonPublic) {
                 bindingFlags = bindingFlags | BindingFlags.NonPublic;
+            }
 
             return t.GetConstructors(bindingFlags).SingleOrDefault(c => !c.GetParameters().Any());
         }
@@ -187,8 +198,9 @@ namespace indice.Edi.Utilities
         public static bool IsNullable(Type t) {
             ValidationUtils.ArgumentNotNull(t, "t");
 
-            if (t.IsValueType())
+            if (t.IsValueType()) {
                 return IsNullableType(t);
+            }
 
             return true;
         }
@@ -206,28 +218,29 @@ namespace indice.Edi.Utilities
         }
 
         public static bool IsGenericDefinition(Type type, Type genericInterfaceDefinition) {
-            if (!type.IsGenericType())
+            if (!type.IsGenericType()) {
                 return false;
+            }
 
-            Type t = type.GetGenericTypeDefinition();
+            var t = type.GetGenericTypeDefinition();
             return (t == genericInterfaceDefinition);
         }
 
         public static bool ImplementsGenericDefinition(Type type, Type genericInterfaceDefinition) {
-            Type implementingType;
-            return ImplementsGenericDefinition(type, genericInterfaceDefinition, out implementingType);
+            return ImplementsGenericDefinition(type, genericInterfaceDefinition, out var implementingType);
         }
 
         public static bool ImplementsGenericDefinition(Type type, Type genericInterfaceDefinition, out Type implementingType) {
             ValidationUtils.ArgumentNotNull(type, "type");
             ValidationUtils.ArgumentNotNull(genericInterfaceDefinition, "genericInterfaceDefinition");
 
-            if (!genericInterfaceDefinition.IsInterface() || !genericInterfaceDefinition.IsGenericTypeDefinition())
+            if (!genericInterfaceDefinition.IsInterface() || !genericInterfaceDefinition.IsGenericTypeDefinition()) {
                 throw new ArgumentNullException("'{0}' is not a generic interface definition.".FormatWith(CultureInfo.InvariantCulture, genericInterfaceDefinition));
+            }
 
             if (type.IsInterface()) {
                 if (type.IsGenericType()) {
-                    Type interfaceDefinition = type.GetGenericTypeDefinition();
+                    var interfaceDefinition = type.GetGenericTypeDefinition();
 
                     if (genericInterfaceDefinition == interfaceDefinition) {
                         implementingType = type;
@@ -236,9 +249,9 @@ namespace indice.Edi.Utilities
                 }
             }
 
-            foreach (Type i in type.GetInterfaces()) {
+            foreach (var i in type.GetInterfaces()) {
                 if (i.IsGenericType()) {
-                    Type interfaceDefinition = i.GetGenericTypeDefinition();
+                    var interfaceDefinition = i.GetGenericTypeDefinition();
 
                     if (genericInterfaceDefinition == interfaceDefinition) {
                         implementingType = i;
@@ -252,23 +265,23 @@ namespace indice.Edi.Utilities
         }
 
         public static bool InheritsGenericDefinition(Type type, Type genericClassDefinition) {
-            Type implementingType;
-            return InheritsGenericDefinition(type, genericClassDefinition, out implementingType);
+            return InheritsGenericDefinition(type, genericClassDefinition, out var implementingType);
         }
 
         public static bool InheritsGenericDefinition(Type type, Type genericClassDefinition, out Type implementingType) {
             ValidationUtils.ArgumentNotNull(type, "type");
             ValidationUtils.ArgumentNotNull(genericClassDefinition, "genericClassDefinition");
 
-            if (!genericClassDefinition.IsClass() || !genericClassDefinition.IsGenericTypeDefinition())
+            if (!genericClassDefinition.IsClass() || !genericClassDefinition.IsGenericTypeDefinition()) {
                 throw new ArgumentNullException("'{0}' is not a generic class definition.".FormatWith(CultureInfo.InvariantCulture, genericClassDefinition));
+            }
 
             return InheritsGenericDefinitionInternal(type, genericClassDefinition, out implementingType);
         }
 
         private static bool InheritsGenericDefinitionInternal(Type currentType, Type genericClassDefinition, out Type implementingType) {
             if (currentType.IsGenericType()) {
-                Type currentGenericClassDefinition = currentType.GetGenericTypeDefinition();
+                var currentGenericClassDefinition = currentType.GetGenericTypeDefinition();
 
                 if (genericClassDefinition == currentGenericClassDefinition) {
                     implementingType = currentType;
@@ -291,14 +304,14 @@ namespace indice.Edi.Utilities
         /// <returns>The type of the typed collection's items.</returns>
         public static Type GetCollectionItemType(Type type) {
             ValidationUtils.ArgumentNotNull(type, "type");
-            Type genericListType;
 
             if (type.IsArray) {
                 return type.GetElementType();
             }
-            if (ImplementsGenericDefinition(type, typeof(IEnumerable<>), out genericListType)) {
-                if (genericListType.IsGenericTypeDefinition())
+            if (ImplementsGenericDefinition(type, typeof(IEnumerable<>), out var genericListType)) {
+                if (genericListType.IsGenericTypeDefinition()) {
                     throw new Exception("Type {0} is not a collection.".FormatWith(CultureInfo.InvariantCulture, type));
+                }
 
                 return genericListType.GetGenericArguments()[0];
             }
@@ -312,12 +325,12 @@ namespace indice.Edi.Utilities
         public static void GetDictionaryKeyValueTypes(Type dictionaryType, out Type keyType, out Type valueType) {
             ValidationUtils.ArgumentNotNull(dictionaryType, "type");
 
-            Type genericDictionaryType;
-            if (ImplementsGenericDefinition(dictionaryType, typeof(IDictionary<,>), out genericDictionaryType)) {
-                if (genericDictionaryType.IsGenericTypeDefinition())
+            if (ImplementsGenericDefinition(dictionaryType, typeof(IDictionary<,>), out var genericDictionaryType)) {
+                if (genericDictionaryType.IsGenericTypeDefinition()) {
                     throw new Exception("Type {0} is not a dictionary.".FormatWith(CultureInfo.InvariantCulture, dictionaryType));
+                }
 
-                Type[] dictionaryGenericArguments = genericDictionaryType.GetGenericArguments();
+                var dictionaryGenericArguments = genericDictionaryType.GetGenericArguments();
 
                 keyType = dictionaryGenericArguments[0];
                 valueType = dictionaryGenericArguments[1];
@@ -364,12 +377,13 @@ namespace indice.Edi.Utilities
         public static bool IsIndexedProperty(MemberInfo member) {
             ValidationUtils.ArgumentNotNull(member, "member");
 
-            PropertyInfo propertyInfo = member as PropertyInfo;
+            var propertyInfo = member as PropertyInfo;
 
-            if (propertyInfo != null)
+            if (propertyInfo != null) {
                 return IsIndexedProperty(propertyInfo);
-            else
+            } else {
                 return false;
+            }
         }
 
         /// <summary>
@@ -442,20 +456,26 @@ namespace indice.Edi.Utilities
         public static bool CanReadMemberValue(MemberInfo member, bool nonPublic) {
             switch (member.MemberType()) {
                 case MemberTypes.Field:
-                    FieldInfo fieldInfo = (FieldInfo)member;
+                    var fieldInfo = (FieldInfo)member;
 
-                    if (nonPublic)
+                    if (nonPublic) {
                         return true;
-                    else if (fieldInfo.IsPublic)
+                    } else if (fieldInfo.IsPublic) {
                         return true;
+                    }
+
                     return false;
                 case MemberTypes.Property:
-                    PropertyInfo propertyInfo = (PropertyInfo)member;
+                    var propertyInfo = (PropertyInfo)member;
 
-                    if (!propertyInfo.CanRead)
+                    if (!propertyInfo.CanRead) {
                         return false;
-                    if (nonPublic)
+                    }
+
+                    if (nonPublic) {
                         return true;
+                    }
+
                     return (propertyInfo.GetGetMethod(nonPublic) != null);
                 default:
                     return false;
@@ -474,24 +494,36 @@ namespace indice.Edi.Utilities
         public static bool CanSetMemberValue(MemberInfo member, bool nonPublic, bool canSetReadOnly) {
             switch (member.MemberType()) {
                 case MemberTypes.Field:
-                    FieldInfo fieldInfo = (FieldInfo)member;
+                    var fieldInfo = (FieldInfo)member;
 
-                    if (fieldInfo.IsLiteral)
+                    if (fieldInfo.IsLiteral) {
                         return false;
-                    if (fieldInfo.IsInitOnly && !canSetReadOnly)
+                    }
+
+                    if (fieldInfo.IsInitOnly && !canSetReadOnly) {
                         return false;
-                    if (nonPublic)
+                    }
+
+                    if (nonPublic) {
                         return true;
-                    if (fieldInfo.IsPublic)
+                    }
+
+                    if (fieldInfo.IsPublic) {
                         return true;
+                    }
+
                     return false;
                 case MemberTypes.Property:
-                    PropertyInfo propertyInfo = (PropertyInfo)member;
+                    var propertyInfo = (PropertyInfo)member;
 
-                    if (!propertyInfo.CanWrite)
+                    if (!propertyInfo.CanWrite) {
                         return false;
-                    if (nonPublic)
+                    }
+
+                    if (nonPublic) {
                         return true;
+                    }
+
                     return (propertyInfo.GetSetMethod(nonPublic) != null);
                 default:
                     return false;
@@ -499,7 +531,7 @@ namespace indice.Edi.Utilities
         }
 
         public static List<MemberInfo> GetFieldsAndProperties(Type type, BindingFlags bindingAttr) {
-            List<MemberInfo> targetMembers = new List<MemberInfo>();
+            var targetMembers = new List<MemberInfo>();
 
             targetMembers.AddRange(GetFields(type, bindingAttr));
             targetMembers.AddRange(GetProperties(type, bindingAttr));
@@ -508,24 +540,25 @@ namespace indice.Edi.Utilities
             // http://social.msdn.microsoft.com/Forums/en-US/b5abbfee-e292-4a64-8907-4e3f0fb90cd9/reflection-overriden-abstract-generic-properties?forum=netfxbcl
             // filter members to only return the override on the topmost class
             // update: I think this is fixed in .NET 3.5 SP1 - leave this in for now...
-            List<MemberInfo> distinctMembers = new List<MemberInfo>(targetMembers.Count);
+            var distinctMembers = new List<MemberInfo>(targetMembers.Count);
 
             foreach (var groupedMember in targetMembers.GroupBy(m => m.Name)) {
-                int count = groupedMember.Count();
+                var count = groupedMember.Count();
                 IList<MemberInfo> members = groupedMember.ToList();
 
                 if (count == 1) {
                     distinctMembers.Add(members.First());
                 } else {
                     IList<MemberInfo> resolvedMembers = new List<MemberInfo>();
-                    foreach (MemberInfo memberInfo in members) {
+                    foreach (var memberInfo in members) {
                         // this is a bit hacky
                         // if the hiding property is hiding a base property and it is virtual
                         // then this ensures the derived property gets used
-                        if (resolvedMembers.Count == 0)
+                        if (resolvedMembers.Count == 0) {
                             resolvedMembers.Add(memberInfo);
-                        else if (!IsOverridenGenericMember(memberInfo, bindingAttr) || memberInfo.Name == "Item")
+                        } else if (!IsOverridenGenericMember(memberInfo, bindingAttr) || memberInfo.Name == "Item") {
                             resolvedMembers.Add(memberInfo);
+                        }
                     }
 
                     distinctMembers.AddRange(resolvedMembers);
@@ -536,25 +569,34 @@ namespace indice.Edi.Utilities
         }
 
         private static bool IsOverridenGenericMember(MemberInfo memberInfo, BindingFlags bindingAttr) {
-            if (memberInfo.MemberType() != MemberTypes.Property)
+            if (memberInfo.MemberType() != MemberTypes.Property) {
                 return false;
+            }
 
-            PropertyInfo propertyInfo = (PropertyInfo)memberInfo;
-            if (!IsVirtual(propertyInfo))
+            var propertyInfo = (PropertyInfo)memberInfo;
+            if (!IsVirtual(propertyInfo)) {
                 return false;
+            }
 
-            Type declaringType = propertyInfo.DeclaringType;
-            if (!declaringType.IsGenericType())
+            var declaringType = propertyInfo.DeclaringType;
+            if (!declaringType.IsGenericType()) {
                 return false;
-            Type genericTypeDefinition = declaringType.GetGenericTypeDefinition();
-            if (genericTypeDefinition == null)
+            }
+
+            var genericTypeDefinition = declaringType.GetGenericTypeDefinition();
+            if (genericTypeDefinition == null) {
                 return false;
-            MemberInfo[] members = genericTypeDefinition.GetMember(propertyInfo.Name, bindingAttr);
-            if (members.Length == 0)
+            }
+
+            var members = genericTypeDefinition.GetMember(propertyInfo.Name, bindingAttr);
+            if (members.Length == 0) {
                 return false;
-            Type memberUnderlyingType = GetMemberUnderlyingType(members[0]);
-            if (!memberUnderlyingType.IsGenericParameter)
+            }
+
+            var memberUnderlyingType = GetMemberUnderlyingType(members[0]);
+            if (!memberUnderlyingType.IsGenericParameter) {
                 return false;
+            }
 
             return true;
         }
@@ -564,15 +606,14 @@ namespace indice.Edi.Utilities
         }
 
         public static T GetAttribute<T>(object attributeProvider, bool inherit) where T : Attribute {
-            T[] attributes = GetAttributes<T>(attributeProvider, inherit);
+            var attributes = GetAttributes<T>(attributeProvider, inherit);
 
             return (attributes != null) ? attributes.FirstOrDefault() : null;
         }
 
 #if !(PORTABLE || NETSTANDARD10 || NETSTANDARD13)
-        public static T[] GetAttributes<T>(object attributeProvider, bool inherit) where T : Attribute
-        {
-            Attribute[] a = GetAttributes(attributeProvider, typeof(T), inherit);
+        public static T[] GetAttributes<T>(object attributeProvider, bool inherit) where T : Attribute {
+            var a = GetAttributes(attributeProvider, typeof(T), inherit);
 
             if (a is T[]) {
                 var attributes = a as T[];
@@ -581,20 +622,18 @@ namespace indice.Edi.Utilities
             return a.Cast<T>().ToArray();
         }
 
-        public static Attribute[] GetAttributes(object attributeProvider, Type attributeType, bool inherit)
-        {
+        public static Attribute[] GetAttributes(object attributeProvider, Type attributeType, bool inherit) {
             ValidationUtils.ArgumentNotNull(attributeProvider, "attributeProvider");
 
-            object provider = attributeProvider;
+            var provider = attributeProvider;
 
             // http://hyperthink.net/blog/getcustomattributes-gotcha/
             // ICustomAttributeProvider doesn't do inheritance
 
-            if (provider is Type)
-            {
-                Type t = (Type)provider;
-                object[] a = (attributeType != null) ? t.GetCustomAttributes(attributeType, inherit) : t.GetCustomAttributes(inherit);
-                Attribute[] attributes = a.Cast<Attribute>().ToArray();
+            if (provider is Type) {
+                var t = (Type)provider;
+                var a = (attributeType != null) ? t.GetCustomAttributes(attributeType, inherit) : t.GetCustomAttributes(inherit);
+                var attributes = a.Cast<Attribute>().ToArray();
 
 #if (NET20 || NET35)
                 // ye olde .NET GetCustomAttributes doesn't respect the inherit argument
@@ -605,35 +644,31 @@ namespace indice.Edi.Utilities
                 return attributes;
             }
 
-            if (provider is Assembly)
-            {
-                Assembly a = (Assembly)provider;
+            if (provider is Assembly) {
+                var a = (Assembly)provider;
                 return (attributeType != null) ? Attribute.GetCustomAttributes(a, attributeType) : Attribute.GetCustomAttributes(a);
             }
 
-            if (provider is MemberInfo)
-            {
-                MemberInfo m = (MemberInfo)provider;
+            if (provider is MemberInfo) {
+                var m = (MemberInfo)provider;
                 return (attributeType != null) ? Attribute.GetCustomAttributes(m, attributeType, inherit) : Attribute.GetCustomAttributes(m, inherit);
             }
 
 #if !PORTABLE40
-            if (provider is Module)
-            {
-                Module m = (Module)provider;
+            if (provider is Module) {
+                var m = (Module)provider;
                 return (attributeType != null) ? Attribute.GetCustomAttributes(m, attributeType, inherit) : Attribute.GetCustomAttributes(m, inherit);
             }
 #endif
 
-            if (provider is ParameterInfo)
-            {
-                ParameterInfo p = (ParameterInfo)provider;
+            if (provider is ParameterInfo) {
+                var p = (ParameterInfo)provider;
                 return (attributeType != null) ? Attribute.GetCustomAttributes(p, attributeType, inherit) : Attribute.GetCustomAttributes(p, inherit);
             }
 
 #if !PORTABLE40
-            ICustomAttributeProvider customAttributeProvider = (ICustomAttributeProvider)attributeProvider;
-            object[] result = (attributeType != null) ? customAttributeProvider.GetCustomAttributes(attributeType, inherit) : customAttributeProvider.GetCustomAttributes(inherit);
+            var customAttributeProvider = (ICustomAttributeProvider)attributeProvider;
+            var result = (attributeType != null) ? customAttributeProvider.GetCustomAttributes(attributeType, inherit) : customAttributeProvider.GetCustomAttributes(inherit);
 
             return (Attribute[])result;
 #else
@@ -647,29 +682,29 @@ namespace indice.Edi.Utilities
 
         public static Attribute[] GetAttributes(object provider, Type attributeType, bool inherit) {
             if (provider is Type) {
-                Type t = (Type)provider;
+                var t = (Type)provider;
                 return (attributeType != null)
                     ? t.GetTypeInfo().GetCustomAttributes(attributeType, inherit).ToArray()
                     : t.GetTypeInfo().GetCustomAttributes(inherit).ToArray();
             }
 
             if (provider is Assembly) {
-                Assembly a = (Assembly)provider;
+                var a = (Assembly)provider;
                 return (attributeType != null) ? a.GetCustomAttributes(attributeType).ToArray() : a.GetCustomAttributes().ToArray();
             }
 
             if (provider is MemberInfo) {
-                MemberInfo m = (MemberInfo)provider;
+                var m = (MemberInfo)provider;
                 return (attributeType != null) ? m.GetCustomAttributes(attributeType, inherit).ToArray() : m.GetCustomAttributes(inherit).ToArray();
             }
 
             if (provider is Module) {
-                Module m = (Module)provider;
+                var m = (Module)provider;
                 return (attributeType != null) ? m.GetCustomAttributes(attributeType).ToArray() : m.GetCustomAttributes().ToArray();
             }
 
             if (provider is ParameterInfo) {
-                ParameterInfo p = (ParameterInfo)provider;
+                var p = (ParameterInfo)provider;
                 return (attributeType != null) ? p.GetCustomAttributes(attributeType, inherit).ToArray() : p.GetCustomAttributes(inherit).ToArray();
             }
 
@@ -678,7 +713,7 @@ namespace indice.Edi.Utilities
 #endif
 
         public static void SplitFullyQualifiedTypeName(string fullyQualifiedTypeName, out string typeName, out string assemblyName) {
-            int? assemblyDelimiterIndex = GetAssemblyDelimiterIndex(fullyQualifiedTypeName);
+            var assemblyDelimiterIndex = GetAssemblyDelimiterIndex(fullyQualifiedTypeName);
 
             if (assemblyDelimiterIndex != null) {
                 typeName = fullyQualifiedTypeName.Substring(0, assemblyDelimiterIndex.Value).Trim();
@@ -692,9 +727,9 @@ namespace indice.Edi.Utilities
         private static int? GetAssemblyDelimiterIndex(string fullyQualifiedTypeName) {
             // we need to get the first comma following all surrounded in brackets because of generic types
             // e.g. System.Collections.Generic.Dictionary`2[[System.String, mscorlib,Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-            int scope = 0;
-            for (int i = 0; i < fullyQualifiedTypeName.Length; i++) {
-                char current = fullyQualifiedTypeName[i];
+            var scope = 0;
+            for (var i = 0; i < fullyQualifiedTypeName.Length; i++) {
+                var current = fullyQualifiedTypeName[i];
                 switch (current) {
                     case '[':
                         scope++;
@@ -703,8 +738,10 @@ namespace indice.Edi.Utilities
                         scope--;
                         break;
                     case ',':
-                        if (scope == 0)
+                        if (scope == 0) {
                             return i;
+                        }
+
                         break;
                 }
             }
@@ -717,9 +754,9 @@ namespace indice.Edi.Utilities
 
             switch (memberInfo.MemberType()) {
                 case MemberTypes.Property:
-                    PropertyInfo propertyInfo = (PropertyInfo)memberInfo;
+                    var propertyInfo = (PropertyInfo)memberInfo;
 
-                    Type[] types = propertyInfo.GetIndexParameters().Select(p => p.ParameterType).ToArray();
+                    var types = propertyInfo.GetIndexParameters().Select(p => p.ParameterType).ToArray();
 
                     return targetType.GetProperty(propertyInfo.Name, bindingAttr, null, propertyInfo.PropertyType, types, null);
                 default:
@@ -730,7 +767,7 @@ namespace indice.Edi.Utilities
         public static IEnumerable<FieldInfo> GetFields(Type targetType, BindingFlags bindingAttr) {
             ValidationUtils.ArgumentNotNull(targetType, "targetType");
 
-            List<MemberInfo> fieldInfos = new List<MemberInfo>(targetType.GetFields(bindingAttr));
+            var fieldInfos = new List<MemberInfo>(targetType.GetFields(bindingAttr));
 #if !PORTABLE
             // Type.GetFields doesn't return inherited private fields
             // manually find private fields from base class
@@ -746,11 +783,11 @@ namespace indice.Edi.Utilities
             // find base type fields and add them to result
             if ((bindingAttr & BindingFlags.NonPublic) != 0) {
                 // modify flags to not search for public fields
-                BindingFlags nonPublicBindingAttr = bindingAttr.RemoveFlag(BindingFlags.Public);
+                var nonPublicBindingAttr = bindingAttr.RemoveFlag(BindingFlags.Public);
 
                 while ((targetType = targetType.BaseType()) != null) {
                     // filter out protected fields
-                    IEnumerable<MemberInfo> childPrivateFields =
+                    var childPrivateFields =
                         targetType.GetFields(nonPublicBindingAttr).Where(f => f.IsPrivate).Cast<MemberInfo>();
 
                     initialFields.AddRange(childPrivateFields);
@@ -758,15 +795,15 @@ namespace indice.Edi.Utilities
             }
         }
 #endif
-        
+
         public static IEnumerable<PropertyInfo> GetProperties(Type targetType, BindingFlags bindingAttr) {
             ValidationUtils.ArgumentNotNull(targetType, "targetType");
 
-            List<PropertyInfo> propertyInfos = new List<PropertyInfo>(targetType.GetProperties(bindingAttr));
+            var propertyInfos = new List<PropertyInfo>(targetType.GetProperties(bindingAttr));
 
             // GetProperties on an interface doesn't return properties from its interfaces
             if (targetType.IsInterface()) {
-                foreach (Type i in targetType.GetInterfaces()) {
+                foreach (var i in targetType.GetInterfaces()) {
                     propertyInfos.AddRange(i.GetProperties(bindingAttr));
                 }
             }
@@ -774,10 +811,10 @@ namespace indice.Edi.Utilities
             GetChildPrivateProperties(propertyInfos, targetType, bindingAttr);
 
             // a base class private getter/setter will be inaccessable unless the property was gotten from the base class
-            for (int i = 0; i < propertyInfos.Count; i++) {
-                PropertyInfo member = propertyInfos[i];
+            for (var i = 0; i < propertyInfos.Count; i++) {
+                var member = propertyInfos[i];
                 if (member.DeclaringType != targetType) {
-                    PropertyInfo declaredMember = (PropertyInfo)GetMemberInfoFromType(member.DeclaringType, member);
+                    var declaredMember = (PropertyInfo)GetMemberInfoFromType(member.DeclaringType, member);
                     propertyInfos[i] = declaredMember;
                 }
             }
@@ -798,17 +835,17 @@ namespace indice.Edi.Utilities
             // also find base properties that have been hidden by subtype properties with the same name
 
             while ((targetType = targetType.BaseType()) != null) {
-                foreach (PropertyInfo propertyInfo in targetType.GetProperties(bindingAttr)) {
-                    PropertyInfo subTypeProperty = propertyInfo;
+                foreach (var propertyInfo in targetType.GetProperties(bindingAttr)) {
+                    var subTypeProperty = propertyInfo;
 
                     if (!IsPublic(subTypeProperty)) {
                         // have to test on name rather than reference because instances are different
                         // depending on the type that GetProperties was called on
-                        int index = initialProperties.IndexOf(p => p.Name == subTypeProperty.Name);
+                        var index = initialProperties.IndexOf(p => p.Name == subTypeProperty.Name);
                         if (index == -1) {
                             initialProperties.Add(subTypeProperty);
                         } else {
-                            PropertyInfo childProperty = initialProperties[index];
+                            var childProperty = initialProperties[index];
                             // don't replace public child with private base
                             if (!IsPublic(childProperty)) {
                                 // replace nonpublic properties for a child, but gotten from
@@ -819,19 +856,21 @@ namespace indice.Edi.Utilities
                         }
                     } else {
                         if (!subTypeProperty.IsVirtual()) {
-                            int index = initialProperties.IndexOf(p => p.Name == subTypeProperty.Name
+                            var index = initialProperties.IndexOf(p => p.Name == subTypeProperty.Name
                                                                        && p.DeclaringType == subTypeProperty.DeclaringType);
 
-                            if (index == -1)
+                            if (index == -1) {
                                 initialProperties.Add(subTypeProperty);
+                            }
                         } else {
-                            int index = initialProperties.IndexOf(p => p.Name == subTypeProperty.Name
+                            var index = initialProperties.IndexOf(p => p.Name == subTypeProperty.Name
                                                                        && p.IsVirtual()
                                                                        && p.GetBaseDefinition() != null
                                                                        && p.GetBaseDefinition().DeclaringType.IsAssignableFrom(subTypeProperty.DeclaringType));
 
-                            if (index == -1)
+                            if (index == -1) {
                                 initialProperties.Add(subTypeProperty);
+                            }
                         }
                     }
                 }
@@ -840,7 +879,7 @@ namespace indice.Edi.Utilities
 
 #if !NETSTANDARD10
         public static bool IsMethodOverridden(Type currentType, Type methodDeclaringType, string method) {
-            bool isMethodOverriden = currentType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+            var isMethodOverriden = currentType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
                 .Any(info =>
                     info.Name == method &&
                     // check that the method overrides the original on DynamicObjectProxy
@@ -852,8 +891,9 @@ namespace indice.Edi.Utilities
         }
 #endif
         public static object GetDefaultValue(Type type) {
-            if (!type.IsValueType())
+            if (!type.IsValueType()) {
                 return null;
+            }
 
             switch (ConvertUtils.GetTypeCode(type)) {
                 case PrimitiveTypeCode.Boolean:
@@ -889,8 +929,9 @@ namespace indice.Edi.Utilities
 #endif
             }
 
-            if (IsNullable(type))
+            if (IsNullable(type)) {
                 return null;
+            }
 
             // possibly use IL initobj for perf here?
             return Activator.CreateInstance(type);

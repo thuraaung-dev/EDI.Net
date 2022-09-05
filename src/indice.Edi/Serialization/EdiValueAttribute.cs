@@ -8,12 +8,12 @@ namespace indice.Edi.Serialization
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, Inherited = false, AllowMultiple = true)]
     public sealed class EdiValueAttribute : EdiAttribute
     {
-        private Picture _picture;
+        private readonly Picture _picture;
         private bool _Mandatory;
         private string _Description;
         private string _Format;
         private string _Path;
-        
+
         /// <summary>
         /// Indicates that the current structure (Segment or Element) is mandatory or optional. By default this is false.
         /// </summary>
@@ -74,6 +74,6 @@ namespace indice.Edi.Serialization
         public EdiValueAttribute(Picture picture) {
             _picture = picture;
         }
-        
+
     }
 }

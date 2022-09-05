@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using indice.Edi.Serialization;
 
 namespace indice.Edi.Tests.Models
 {
-    class AutoEndSegmentGroups
+    internal class AutoEndSegmentGroups
     {
         public List<Message> Messages { get; set; }
 

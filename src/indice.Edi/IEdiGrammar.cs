@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace indice.Edi
+﻿namespace indice.Edi
 {
     /// <summary>
     /// The <see cref="IEdiGrammar"/> comprises of all the basic structural settings.

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace indice.Edi
 {
@@ -30,8 +28,10 @@ namespace indice.Edi
         /// </summary>
         /// <param name="grammar"></param>
         public EdiPathComparer(IEdiGrammar grammar) {
-            if (null == grammar)
+            if (null == grammar) {
                 throw new ArgumentNullException(nameof(grammar));
+            }
+
             segmentOrder = new List<string> {
                 grammar.InterchangeHeaderTag,
                 grammar.FunctionalGroupHeaderTag,
@@ -48,7 +48,7 @@ namespace indice.Edi
                 customSegmentIndex = 3;
             }
         }
-        
+
         /// <summary>
         /// Compares two <see cref="EdiPath"/>
         /// </summary>
@@ -56,7 +56,7 @@ namespace indice.Edi
         /// <param name="y"></param>
         /// <returns></returns>
         public int Compare(EdiPath x, EdiPath y) {
-            if (x.Segment != y.Segment) { 
+            if (x.Segment != y.Segment) {
                 var i = Rank(x);
                 var j = Rank(y);
                 return i.CompareTo(j);

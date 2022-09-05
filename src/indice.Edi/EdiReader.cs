@@ -1,8 +1,8 @@
-﻿using indice.Edi.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using indice.Edi.Utilities;
 
 namespace indice.Edi
 {
@@ -85,7 +85,7 @@ namespace indice.Edi
         #endregion
 
         // current Token data
-        EdiToken _tokenType;
+        private EdiToken _tokenType;
         internal State _currentState;
         private CultureInfo _culture;
         private readonly IEdiGrammar _grammar;
@@ -140,8 +140,9 @@ namespace indice.Edi
         public int? MaxDepth {
             get { return _maxDepth; }
             set {
-                if (value <= 0)
+                if (value <= 0) {
                     throw new ArgumentException("Value must be positive.", nameof(value));
+                }
 
                 _maxDepth = value;
             }
@@ -174,11 +175,12 @@ namespace indice.Edi
         /// <value>The depth of the current token in the EDI document.</value>
         public virtual int Depth {
             get {
-                int depth = _stack.Count;
-                if (TokenType.IsStartToken() || _currentPosition.Type == EdiContainerType.None)
+                var depth = _stack.Count;
+                if (TokenType.IsStartToken() || _currentPosition.Type == EdiContainerType.None) {
                     return depth;
-                else
+                } else {
                     return depth + 1;
+                }
             }
         }
 
@@ -198,7 +200,7 @@ namespace indice.Edi
         /// </summary>
         protected bool IsServiceStringAdvice {
             get {
-                return Grammar.ServiceStringAdviceTag != null && 
+                return Grammar.ServiceStringAdviceTag != null &&
                        TokenType == EdiToken.SegmentName &&
                        _currentPosition.SegmentName == Grammar.ServiceStringAdviceTag;
             }
@@ -210,7 +212,7 @@ namespace indice.Edi
         /// </summary>
         public bool IsStartInterchange {
             get {
-                return TokenType == EdiToken.SegmentName && 
+                return TokenType == EdiToken.SegmentName &&
                        _currentPosition.SegmentName == Grammar.InterchangeHeaderTag;
             }
         }
@@ -275,8 +277,10 @@ namespace indice.Edi
         /// Initializes a new instance of the <see cref="EdiReader"/> class.
         /// </summary>
         protected EdiReader(IEdiGrammar grammar) {
-            if (null == grammar)
+            if (null == grammar) {
                 throw new ArgumentNullException(nameof(grammar));
+            }
+
             _currentState = State.Start;
             _grammar = grammar;
             _stack = new List<EdiPosition>(4);
@@ -284,12 +288,13 @@ namespace indice.Edi
         }
 
         private string GetCurrentPath() {
-            if (_currentPosition.Type == EdiContainerType.None)
+            if (_currentPosition.Type == EdiContainerType.None) {
                 return string.Empty;
+            }
 
-            bool startingSegment = _currentState != State.SegmentStart;
+            var startingSegment = _currentState != State.SegmentStart;
 
-            IEnumerable<EdiPosition> positions = (!startingSegment)
+            var positions = (!startingSegment)
                 ? _stack
                 : _stack.Concat(new[] { _currentPosition });
 
@@ -321,8 +326,9 @@ namespace indice.Edi
                 oldPosition = _currentPosition;
                 _currentPosition = new EdiPosition();
             }
-            if (_maxDepth != null && Depth <= _maxDepth)
+            if (_maxDepth != null && Depth <= _maxDepth) {
                 _hasExceededMaxDepth = false;
+            }
 
             return oldPosition.Type;
         }
@@ -331,11 +337,12 @@ namespace indice.Edi
         /// Skips the children of the current token.
         /// </summary>
         public void Skip() {
-            if (TokenType == EdiToken.SegmentName)
+            if (TokenType == EdiToken.SegmentName) {
                 Read();
+            }
 
             if (TokenType.IsStartToken()) {
-                int depth = Depth;
+                var depth = Depth;
 
                 while (Read() && (depth < Depth)) {
                 }
@@ -365,9 +372,9 @@ namespace indice.Edi
         public abstract long? ReadAsInt64();
 
         /// <summary>
-        /// Reads the next EDI token from the stream as a <see cref="String"/>.
+        /// Reads the next EDI token from the stream as a <see cref="string"/>.
         /// </summary>
-        /// <returns>A <see cref="String"/>. This method will return <c>null</c> at the end of an array.</returns>
+        /// <returns>A <see cref="string"/>. This method will return <c>null</c> at the end of an array.</returns>
         public abstract string ReadAsString();
 
         /// <summary>
@@ -380,7 +387,7 @@ namespace indice.Edi
         /// <summary>
         /// Reads the next EDI token from the stream as a <see cref="Nullable{DateTime}"/>.
         /// </summary>
-        /// <returns>A <see cref="String"/>. This method will return <c>null</c> at the end of an array.</returns>
+        /// <returns>A <see cref="string"/>. This method will return <c>null</c> at the end of an array.</returns>
         public abstract DateTime? ReadAsDateTime();
 
         #region Read Internal Methods
@@ -388,7 +395,7 @@ namespace indice.Edi
         internal virtual bool ReadInternal() {
             throw new NotImplementedException();
         }
-        
+
         internal decimal? ReadAsDecimalInternal(Picture? picture) {
             EdiToken t;
             if (!ReadInternal()) {
@@ -397,10 +404,12 @@ namespace indice.Edi
             }
 
             t = TokenType;
-            if (t == EdiToken.Null)
+            if (t == EdiToken.Null) {
                 return null;
+            }
+
             if (t == EdiToken.String) {
-                string s = (string)Value;
+                var s = (string)Value;
                 if (s != null) {
                     s = s.TrimStart('Z'); // Z suppresses leading zeros
                 }
@@ -408,8 +417,7 @@ namespace indice.Edi
                     SetToken(EdiToken.Null);
                     return null;
                 }
-                decimal d;
-                if (s.TryParse(picture, Grammar.DecimalMark, out d)) {
+                if (s.TryParse(picture, Grammar.DecimalMark, out var d)) {
                     SetToken(EdiToken.Float, d, false);
                     return d;
                 }
@@ -426,11 +434,12 @@ namespace indice.Edi
             } else {
                 t = TokenType;
             }
-            if (t == EdiToken.Null)
+            if (t == EdiToken.Null) {
                 return null;
-            int i;
+            }
+
             if (t == EdiToken.String) {
-                string s = (string)Value;
+                var s = (string)Value;
                 if (s != null) {
                     s = s.TrimStart('Z'); // Z suppresses leading zeros
                 }
@@ -438,7 +447,7 @@ namespace indice.Edi
                     SetToken(EdiToken.Null);
                     return null;
                 }
-                if (int.TryParse(s, NumberStyles.Integer, Culture, out i)) {
+                if (int.TryParse(s, NumberStyles.Integer, Culture, out var i)) {
                     SetToken(EdiToken.Integer, i, false);
                     return i;
                 }
@@ -455,11 +464,12 @@ namespace indice.Edi
             } else {
                 t = TokenType;
             }
-            if (t == EdiToken.Null)
+            if (t == EdiToken.Null) {
                 return null;
-            long i;
+            }
+
             if (t == EdiToken.String) {
-                string s = (string)Value;
+                var s = (string)Value;
                 if (s != null) {
                     s = s.TrimStart('Z'); // Z suppresses leading zeros
                 }
@@ -467,7 +477,7 @@ namespace indice.Edi
                     SetToken(EdiToken.Null);
                     return null;
                 }
-                if (long.TryParse(s, NumberStyles.Integer, Culture, out i)) {
+                if (long.TryParse(s, NumberStyles.Integer, Culture, out var i)) {
                     SetToken(EdiToken.Integer, i, false);
                     return i;
                 }
@@ -484,19 +494,22 @@ namespace indice.Edi
             } else {
                 t = TokenType;
             }
-            if (t == EdiToken.String)
+            if (t == EdiToken.String) {
                 return (string)Value;
+            }
 
-            if (t == EdiToken.Null)
+            if (t == EdiToken.Null) {
                 return null;
+            }
 
             if (t.IsPrimitiveToken()) {
                 if (Value != null) {
                     string s;
-                    if (Value is IFormattable)
+                    if (Value is IFormattable) {
                         s = ((IFormattable)Value).ToString(null, Culture);
-                    else
+                    } else {
                         s = Value.ToString();
+                    }
 
                     SetToken(EdiToken.String, s, false);
                     return s;
@@ -510,34 +523,36 @@ namespace indice.Edi
                 SetToken(EdiToken.None);
                 return null;
             }
-            if (TokenType == EdiToken.Date)
+            if (TokenType == EdiToken.Date) {
                 return (DateTime)Value;
+            }
 
-            if (TokenType == EdiToken.Null)
+            if (TokenType == EdiToken.Null) {
                 return null;
+            }
 
             if (TokenType == EdiToken.String) {
-                string s = (string)Value;
+                var s = (string)Value;
                 if (string.IsNullOrEmpty(s)) {
                     SetToken(EdiToken.Null);
                     return null;
                 }
-                DateTime dt;
-                
-                if (DateTime.TryParse(s, Culture, DateTimeStyles.RoundtripKind, out dt)) {
+
+                if (DateTime.TryParse(s, Culture, DateTimeStyles.RoundtripKind, out var dt)) {
                     SetToken(EdiToken.Date, dt, false);
                     return dt;
                 }
                 throw EdiReaderException.Create(this, "Could not convert string to DateTime: {0}.".FormatWith(CultureInfo.InvariantCulture, Value));
             }
-            
+
             throw EdiReaderException.Create(this, "Error reading date. Unexpected token: {0}.".FormatWith(CultureInfo.InvariantCulture, TokenType));
-        } 
+        }
         #endregion
 
         internal EdiPosition GetPosition(int depth) {
-            if (depth < _stack.Count)
+            if (depth < _stack.Count) {
                 return _stack[depth];
+            }
 
             return _currentPosition;
         }
@@ -615,26 +630,27 @@ namespace indice.Edi
                     SetPostValueState();
                     break;
             }
-            if (newToken.IsStartToken()) { 
+            if (newToken.IsStartToken()) {
                 _Path = GetCurrentPath();
             }
-        } 
+        }
         #endregion
 
         internal void SetPostValueState() {
-            if (Peek() != EdiContainerType.None)
+            if (Peek() != EdiContainerType.None) {
                 _currentState = State.PostValue;
-            else
+            } else {
                 SetFinished();
+            }
         }
 
         private void IncrementPosition() {
-            if (_currentPosition.HasIndex) { 
+            if (_currentPosition.HasIndex) {
                 _currentPosition.Position++;
             }
         }
 
-        
+
         private void SetFinished() {
             _currentState = State.Finished;
         }
@@ -661,8 +677,9 @@ namespace indice.Edi
         /// </summary>
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing) {
-            if (_currentState != State.Closed && disposing)
+            if (_currentState != State.Closed && disposing) {
                 Close();
+            }
         }
 
 

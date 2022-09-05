@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace indice.Edi
 {
@@ -12,8 +9,8 @@ namespace indice.Edi
     /// </summary>
     public class EdiGrammar : IEdiGrammar
     {
-        char[] _separators;
-        
+        private char[] _separators;
+
         /// <summary>
         /// Constructs an <see cref="EdiGrammar"/> with the EdiFact defaults
         /// </summary>
@@ -24,7 +21,7 @@ namespace indice.Edi
             ReleaseCharacter = '?';
             Reserved = new[] { ' ' };
             SegmentTerminator = '\'';
-            
+
             ServiceStringAdviceTag = "UNA";
             InterchangeHeaderTag = "UNB";
             FunctionalGroupHeaderTag = "UNG";

@@ -1,6 +1,5 @@
-﻿using indice.Edi.Serialization;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using indice.Edi.Serialization;
 
 namespace indice.Edi.Tests.Models
 {

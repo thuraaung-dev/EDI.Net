@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace indice.Edi
+﻿namespace indice.Edi
 {
     /// <summary>
     /// Specifies the type of EDI token.
@@ -39,8 +33,52 @@ namespace indice.Edi
         /// <summary>
         /// A string.
         /// </summary>
+
+        /* Unmerged change from project 'indice.Edi (netstandard1.3)'
+        Before:
+                String = 5,
+
+                /// <summary>
+        After:
+                String = 5,
+
+                /// <summary>
+        */
+
+        /* Unmerged change from project 'indice.Edi (netstandard1.0)'
+        Before:
+                String = 5,
+
+                /// <summary>
+        After:
+                String = 5,
+
+                /// <summary>
+        */
+
+        /* Unmerged change from project 'indice.Edi (netstandard2.0)'
+        Before:
+                String = 5,
+
+                /// <summary>
+        After:
+                String = 5,
+
+                /// <summary>
+        */
+
+        /* Unmerged change from project 'indice.Edi (net5.0)'
+        Before:
+                String = 5,
+
+                /// <summary>
+        After:
+                String = 5,
+
+                /// <summary>
+        */
         String = 5,
-        
+
         /// <summary>
         /// An integer.
         /// </summary>
@@ -50,7 +88,7 @@ namespace indice.Edi
         /// A float.
         /// </summary>
         Float = 7,
-        
+
         /// <summary>
         /// A boolean.
         /// </summary>

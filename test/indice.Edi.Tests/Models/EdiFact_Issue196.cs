@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using indice.Edi.Serialization;
 
 namespace indice.Edi.Tests.Models
@@ -11,7 +7,7 @@ namespace indice.Edi.Tests.Models
     {
         public UNB_segment UNB { get; set; }
         public List<Delfor_message> Messages { get; set; }
-        
+
 
         [EdiMessage]
         public class Delfor_message

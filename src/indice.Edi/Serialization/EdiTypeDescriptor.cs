@@ -1,14 +1,12 @@
-﻿using indice.Edi.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using indice.Edi.Utilities;
 
 namespace indice.Edi.Serialization
 {
-    class EdiTypeDescriptor
+    internal class EdiTypeDescriptor
     {
         private readonly List<EdiAttribute> _Attributes;
         private readonly List<EdiPropertyDescriptor> _Properties;
@@ -64,7 +62,7 @@ namespace indice.Edi.Serialization
                     _Properties.Add(p);
                 }
             }
-            
+
             _Attributes = new List<EdiAttribute>();
             Attributes.AddRange(ClrType.GetTypeInfo().GetCustomAttributes<EdiAttribute>());
             _SegmentGroupInfo = Attributes.OfType<EdiSegmentGroupAttribute>().SingleOrDefault();

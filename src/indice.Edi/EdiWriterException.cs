@@ -47,8 +47,7 @@ namespace indice.Edi
         /// <summary>
         /// Initializes a new instance of the <see cref="EdiWriterException"/> class.
         /// </summary>
-        public EdiWriterException()
-        {
+        public EdiWriterException() {
         }
 
         /// <summary>
@@ -57,8 +56,7 @@ namespace indice.Edi
         /// </summary>
         /// <param name="message">The error message that explains the reason for the exception.</param>
         public EdiWriterException(string message)
-            : base(message)
-        {
+            : base(message) {
         }
 
         /// <summary>
@@ -68,8 +66,7 @@ namespace indice.Edi
         /// <param name="message">The error message that explains the reason for the exception.</param>
         /// <param name="innerException">The exception that is the cause of the current exception, or a null reference (Nothing in Visual Basic) if no inner exception is specified.</param>
         public EdiWriterException(string message, Exception innerException)
-            : base(message, innerException)
-        {
+            : base(message, innerException) {
         }
 
 #if !(PORTABLE || NETSTANDARD10 || NETSTANDARD13)
@@ -81,24 +78,20 @@ namespace indice.Edi
         /// <exception cref="T:System.ArgumentNullException">The <paramref name="info"/> parameter is null. </exception>
         /// <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is null or <see cref="P:System.Exception.HResult"/> is zero (0). </exception>
         public EdiWriterException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
+            : base(info, context) {
         }
 #endif
 
         internal EdiWriterException(string message, Exception innerException, string path)
-            : base(message, innerException)
-        {
+            : base(message, innerException) {
             Path = path;
         }
 
-        internal static EdiWriterException Create(EdiWriter writer, string message, Exception ex)
-        {
+        internal static EdiWriterException Create(EdiWriter writer, string message, Exception ex) {
             return Create(writer.ContainerPath, message, ex);
         }
 
-        internal static EdiWriterException Create(string path, string message, Exception ex)
-        {
+        internal static EdiWriterException Create(string path, string message, Exception ex) {
             message = EdiPosition.FormatMessage(null, path, message);
 
             return new EdiWriterException(message, ex, path);

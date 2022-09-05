@@ -5,7 +5,7 @@ using indice.Edi.Tests.Models.EdiFact01;
 
 namespace indice.Edi.Tests.Models
 {
-    class EdiFact01_Segments
+    internal class EdiFact01_Segments
     {
         public class Interchange
         {
@@ -212,6 +212,6 @@ namespace indice.Edi.Tests.Models
             [EdiValue("X(14)", Path = "UNT/1")]
             public string TrailerMessageReference { get; set; }
         }
-        
+
     }
 }

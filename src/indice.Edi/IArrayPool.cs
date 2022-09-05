@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace indice.Edi
+﻿namespace indice.Edi
 {
     /// <summary>
     /// Provides an interface for using pooled arrays.

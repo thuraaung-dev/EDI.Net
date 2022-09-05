@@ -25,14 +25,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace indice.Edi.Utilities
 {
-    static class StringUtils
+    internal static class StringUtils
     {
         public const string CarriageReturnLineFeed = "\r\n";
         public const string Empty = "";
@@ -73,15 +73,18 @@ namespace indice.Edi.Utilities
         /// 	<c>true</c> if the string is all white space; otherwise, <c>false</c>.
         /// </returns>
         public static bool IsWhiteSpace(string s) {
-            if (s == null)
+            if (s == null) {
                 throw new ArgumentNullException(nameof(s));
+            }
 
-            if (s.Length == 0)
+            if (s.Length == 0) {
                 return false;
+            }
 
-            for (int i = 0; i < s.Length; i++) {
-                if (!char.IsWhiteSpace(s[i]))
+            for (var i = 0; i < s.Length; i++) {
+                if (!char.IsWhiteSpace(s[i])) {
                     return false;
+                }
             }
 
             return true;
@@ -97,17 +100,18 @@ namespace indice.Edi.Utilities
         }
 
         public static StringWriter CreateStringWriter(int capacity) {
-            StringBuilder sb = new StringBuilder(capacity);
-            StringWriter sw = new StringWriter(sb, CultureInfo.InvariantCulture);
+            var sb = new StringBuilder(capacity);
+            var sw = new StringWriter(sb, CultureInfo.InvariantCulture);
 
             return sw;
         }
 
         public static int? GetLength(string value) {
-            if (value == null)
+            if (value == null) {
                 return null;
-            else
+            } else {
                 return value.Length;
+            }
         }
 
         public static void ToCharAsUnicode(char c, char[] buffer) {
@@ -120,10 +124,13 @@ namespace indice.Edi.Utilities
         }
 
         public static TSource ForgivingCaseSensitiveFind<TSource>(this IEnumerable<TSource> source, Func<TSource, string> valueSelector, string testValue) {
-            if (source == null)
+            if (source == null) {
                 throw new ArgumentNullException(nameof(source));
-            if (valueSelector == null)
+            }
+
+            if (valueSelector == null) {
                 throw new ArgumentNullException(nameof(valueSelector));
+            }
 
             var caseInsensitiveResults = source.Where(s => string.Equals(valueSelector(s), testValue, StringComparison.OrdinalIgnoreCase));
             if (caseInsensitiveResults.Count() <= 1) {
@@ -136,18 +143,21 @@ namespace indice.Edi.Utilities
         }
 
         public static string ToCamelCase(string s) {
-            if (string.IsNullOrEmpty(s))
+            if (string.IsNullOrEmpty(s)) {
                 return s;
+            }
 
-            if (!char.IsUpper(s[0]))
+            if (!char.IsUpper(s[0])) {
                 return s;
+            }
 
-            char[] chars = s.ToCharArray();
+            var chars = s.ToCharArray();
 
-            for (int i = 0; i < chars.Length; i++) {
-                bool hasNext = (i + 1 < chars.Length);
-                if (i > 0 && hasNext && !char.IsUpper(chars[i + 1]))
+            for (var i = 0; i < chars.Length; i++) {
+                var hasNext = (i + 1 < chars.Length);
+                if (i > 0 && hasNext && !char.IsUpper(chars[i + 1])) {
                     break;
+                }
 
 #if !(PORTABLE || NETSTANDARD10 || NETSTANDARD13)
                 chars[i] = char.ToLower(chars[i], CultureInfo.InvariantCulture);

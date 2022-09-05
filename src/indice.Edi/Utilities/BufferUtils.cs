@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace indice.Edi.Utilities
+﻿namespace indice.Edi.Utilities
 {
 
     internal static class BufferUtils
@@ -13,7 +8,7 @@ namespace indice.Edi.Utilities
                 return new char[minSize];
             }
 
-            char[] buffer = bufferPool.Rent(minSize);
+            var buffer = bufferPool.Rent(minSize);
             return buffer;
         }
 

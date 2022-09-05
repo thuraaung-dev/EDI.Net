@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 #if !(PORTABLE || NETSTANDARD10)
 using System.Numerics;
 #endif
-using System.Text;
 using System.IO;
-using System.Xml;
 using indice.Edi.Utilities;
 
 namespace indice.Edi
@@ -64,7 +61,7 @@ namespace indice.Edi
 
             _writer = textWriter;
             _charEscapeFlags = new bool[128];
-            if (Grammar.ReleaseCharacter.HasValue) { 
+            if (Grammar.ReleaseCharacter.HasValue) {
                 _charEscapeFlags[Grammar.DataElementSeparator] =
                 _charEscapeFlags[Grammar.ComponentDataElementSeparator] =
                 _charEscapeFlags[Grammar.SegmentNameDelimiter] =
@@ -100,7 +97,7 @@ namespace indice.Edi
 #endif
             }
         }
-        
+
         /// <summary>
         /// Writes the segment name of a name/value pair on a Edi object.
         /// </summary>
@@ -116,7 +113,7 @@ namespace indice.Edi
         /// Writes the end of a Edi <see cref="EdiContainerType.Segment"/>.
         /// </summary>
         public override void WriteSegmentTerminator() {
-             _writer.Write(Grammar.SegmentTerminator); 
+            _writer.Write(Grammar.SegmentTerminator);
             if (Formatting == Formatting.LinePerSegment) {
                 WriteNewLine();
             }
@@ -187,9 +184,9 @@ namespace indice.Edi
         }
 
         /// <summary>
-        /// Writes a <see cref="String"/> value.
+        /// Writes a <see cref="string"/> value.
         /// </summary>
-        /// <param name="value">The <see cref="String"/> value to write.</param>
+        /// <param name="value">The <see cref="string"/> value to write.</param>
         /// <param name="picture"></param>
         public override void WriteValue(string value, Picture? picture) {
             InternalWriteValue(EdiToken.String);
@@ -201,9 +198,9 @@ namespace indice.Edi
             var bufferPool = _arrayPool;
 
             if (value != null) {
-                int lastWritePosition = 0;
+                var lastWritePosition = 0;
 
-                for (int i = 0; i < value.Length; i++) {
+                for (var i = 0; i < value.Length; i++) {
                     var c = value[i];
 
                     if (c < _charEscapeFlags.Length && !_charEscapeFlags[c]) {
@@ -213,7 +210,7 @@ namespace indice.Edi
                     string escapedValue = null;
 
                     if (c < _charEscapeFlags.Length) {
-                        escapedValue = $"{Grammar.ReleaseCharacter.Value}{c}"; 
+                        escapedValue = $"{Grammar.ReleaseCharacter.Value}{c}";
                     } else {
                         escapedValue = null;
                     }
@@ -223,12 +220,12 @@ namespace indice.Edi
                     }
 
                     if (i > lastWritePosition) {
-                        int length = i - lastWritePosition;
-                        int start = 0;
+                        var length = i - lastWritePosition;
+                        var start = 0;
 
                         if (_writeBuffer == null || _writeBuffer.Length < length) {
-                            char[] newBuffer = BufferUtils.RentBuffer(bufferPool, length);
-                            
+                            var newBuffer = BufferUtils.RentBuffer(bufferPool, length);
+
                             BufferUtils.ReturnBuffer(bufferPool, _writeBuffer);
 
                             _writeBuffer = newBuffer;
@@ -248,7 +245,7 @@ namespace indice.Edi
                     // no escaped text, write entire string
                     _writer.Write(value);
                 } else {
-                    int length = value.Length - lastWritePosition;
+                    var length = value.Length - lastWritePosition;
 
                     if (_writeBuffer == null || _writeBuffer.Length < length) {
                         _writeBuffer = BufferUtils.EnsureBufferSize(bufferPool, length, _writeBuffer);
@@ -263,11 +260,11 @@ namespace indice.Edi
                 WriteNull();
             }
         }
-        
+
         /// <summary>
-        /// Writes a <see cref="Int32"/> value.
+        /// Writes a <see cref="int"/> value.
         /// </summary>
-        /// <param name="value">The <see cref="Int32"/> value to write.</param>
+        /// <param name="value">The <see cref="int"/> value to write.</param>
         /// <param name="picture"></param>
         public override void WriteValue(int value, Picture? picture = null) {
             InternalWriteValue(EdiToken.Integer);
@@ -276,9 +273,9 @@ namespace indice.Edi
         }
 
         /// <summary>
-        /// Writes a <see cref="UInt32"/> value.
+        /// Writes a <see cref="uint"/> value.
         /// </summary>
-        /// <param name="value">The <see cref="UInt32"/> value to write.</param>
+        /// <param name="value">The <see cref="uint"/> value to write.</param>
         /// <param name="picture"></param>
         public override void WriteValue(uint value, Picture? picture = null) {
             InternalWriteValue(EdiToken.Integer);
@@ -287,9 +284,9 @@ namespace indice.Edi
         }
 
         /// <summary>
-        /// Writes a <see cref="Int64"/> value.
+        /// Writes a <see cref="long"/> value.
         /// </summary>
-        /// <param name="value">The <see cref="Int64"/> value to write.</param>
+        /// <param name="value">The <see cref="long"/> value to write.</param>
         /// <param name="picture"></param>
         public override void WriteValue(long value, Picture? picture = null) {
             InternalWriteValue(EdiToken.Float);
@@ -298,9 +295,9 @@ namespace indice.Edi
         }
 
         /// <summary>
-        /// Writes a <see cref="UInt64"/> value.
+        /// Writes a <see cref="ulong"/> value.
         /// </summary>
-        /// <param name="value">The <see cref="UInt64"/> value to write.</param>
+        /// <param name="value">The <see cref="ulong"/> value to write.</param>
         /// <param name="picture"></param>
         public override void WriteValue(ulong value, Picture? picture = null) {
             InternalWriteValue(EdiToken.Integer);
@@ -309,9 +306,9 @@ namespace indice.Edi
         }
 
         /// <summary>
-        /// Writes a <see cref="Single"/> value.
+        /// Writes a <see cref="float"/> value.
         /// </summary>
-        /// <param name="value">The <see cref="Single"/> value to write.</param>
+        /// <param name="value">The <see cref="float"/> value to write.</param>
         /// <param name="picture"></param>
         public override void WriteValue(float value, Picture? picture) {
             InternalWriteValue(EdiToken.Float);
@@ -357,18 +354,18 @@ namespace indice.Edi
         }
 
         /// <summary>
-        /// Writes a <see cref="Boolean"/> value.
+        /// Writes a <see cref="bool"/> value.
         /// </summary>
-        /// <param name="value">The <see cref="Boolean"/> value to write.</param>
+        /// <param name="value">The <see cref="bool"/> value to write.</param>
         public override void WriteValue(bool value) {
             InternalWriteValue(EdiToken.Boolean);
             _writer.Write(value ? 1 : 0);
         }
 
         /// <summary>
-        /// Writes a <see cref="Int16"/> value.
+        /// Writes a <see cref="short"/> value.
         /// </summary>
-        /// <param name="value">The <see cref="Int16"/> value to write.</param>
+        /// <param name="value">The <see cref="short"/> value to write.</param>
         /// <param name="picture"></param>
         public override void WriteValue(short value, Picture? picture) {
             InternalWriteValue(EdiToken.Integer);
@@ -377,9 +374,9 @@ namespace indice.Edi
         }
 
         /// <summary>
-        /// Writes a <see cref="UInt16"/> value.
+        /// Writes a <see cref="ushort"/> value.
         /// </summary>
-        /// <param name="value">The <see cref="UInt16"/> value to write.</param>
+        /// <param name="value">The <see cref="ushort"/> value to write.</param>
         /// <param name="picture"></param>
         public override void WriteValue(ushort value, Picture? picture) {
             InternalWriteValue(EdiToken.Integer);
@@ -388,9 +385,9 @@ namespace indice.Edi
         }
 
         /// <summary>
-        /// Writes a <see cref="Char"/> value.
+        /// Writes a <see cref="char"/> value.
         /// </summary>
-        /// <param name="value">The <see cref="Char"/> value to write.</param>
+        /// <param name="value">The <see cref="char"/> value to write.</param>
         public override void WriteValue(char value) {
             InternalWriteValue(EdiToken.String);
             _writer.Write(value);
@@ -398,9 +395,9 @@ namespace indice.Edi
 
 
         /// <summary>
-        /// Writes a <see cref="SByte"/> value.
+        /// Writes a <see cref="sbyte"/> value.
         /// </summary>
-        /// <param name="value">The <see cref="SByte"/> value to write.</param>
+        /// <param name="value">The <see cref="sbyte"/> value to write.</param>
         /// <param name="picture"></param>
         public override void WriteValue(sbyte value, Picture? picture) {
             InternalWriteValue(EdiToken.Integer);
@@ -409,9 +406,9 @@ namespace indice.Edi
         }
 
         /// <summary>
-        /// Writes a <see cref="Decimal"/> value.
+        /// Writes a <see cref="decimal"/> value.
         /// </summary>
-        /// <param name="value">The <see cref="Decimal"/> value to write.</param>
+        /// <param name="value">The <see cref="decimal"/> value to write.</param>
         /// <param name="picture"></param>
         public override void WriteValue(decimal value, Picture? picture) {
             InternalWriteValue(EdiToken.Float);
@@ -461,7 +458,7 @@ namespace indice.Edi
         /// <param name="value">The <see cref="TimeSpan"/> value to write.</param>
         public override void WriteValue(TimeSpan value) {
             InternalWriteValue(EdiToken.String);
-            string text = value.ToString(null, CultureInfo.InvariantCulture);
+            var text = value.ToString(null, CultureInfo.InvariantCulture);
             _writer.Write(text);
         }
 
@@ -490,7 +487,7 @@ namespace indice.Edi
             if (value >= 0 && value <= 9) {
                 _writer.Write((char)('0' + value));
             } else {
-                ulong uvalue = (value < 0) ? (ulong)-value : (ulong)value;
+                var uvalue = (value < 0) ? (ulong)-value : (ulong)value;
 
                 if (value < 0) {
                     _writer.Write('-');
@@ -506,8 +503,8 @@ namespace indice.Edi
             } else {
                 EnsureWriteBuffer();
 
-                int totalLength = MathUtils.IntLength(uvalue);
-                int length = 0;
+                var totalLength = MathUtils.IntLength(uvalue);
+                var length = 0;
 
                 do {
                     _writeBuffer[totalLength - ++length] = (char)('0' + (uvalue % 10));

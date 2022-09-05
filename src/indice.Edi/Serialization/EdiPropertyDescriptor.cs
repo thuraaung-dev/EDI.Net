@@ -1,10 +1,8 @@
-﻿using indice.Edi.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using indice.Edi.Utilities;
 
 namespace indice.Edi.Serialization
 {
@@ -77,7 +75,7 @@ namespace indice.Edi.Serialization
             }
         }
 
-        public EdiPropertyDescriptor(PropertyInfo info) 
+        public EdiPropertyDescriptor(PropertyInfo info)
             : this(info, null) {
         }
 

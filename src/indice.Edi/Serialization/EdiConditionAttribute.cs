@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace indice.Edi.Serialization
 {
@@ -65,7 +62,7 @@ namespace indice.Edi.Serialization
         }
     }
 
-    
+
     /// <summary>
     /// In case multiple MessageTypes or Segment types with the same name. <see cref="EdiConditionAttribute"/> is used 
     /// to discriminate the classes based on a component value
@@ -82,7 +79,7 @@ namespace indice.Edi.Serialization
         /// Condition satisfaction oprator. Can be either <see cref="EdiConditionCheckType.Equal"/> or <seealso cref="EdiConditionCheckType.NotEqual"/>.
         /// </summary>
         public EdiConditionCheckType CheckFor { get; set; } = EdiConditionCheckType.Equal;
-        
+
         /// <summary>
         /// Creates a Condition attribute by passingthe expected <paramref name="matchValue"/>.
         /// </summary>
@@ -98,7 +95,7 @@ namespace indice.Edi.Serialization
         /// <param name="optionTwo">The second possibly expected value</param>
         public EdiConditionAttribute(string optionOne, string optionTwo)
             : base(null) {
-            Options = new [] { optionOne, optionTwo };
+            Options = new[] { optionOne, optionTwo };
         }
 
         /// <summary>
@@ -126,8 +123,52 @@ namespace indice.Edi.Serialization
                 default:
                     throw new ArgumentOutOfRangeException(nameof(CheckFor), $"Not expected {CheckFor}");
             }
+
+            /* Unmerged change from project 'indice.Edi (netstandard1.3)'
+            Before:
+                    }
+
+                    /// <summary>
+            After:
+                    }
+
+                    /// <summary>
+            */
+
+            /* Unmerged change from project 'indice.Edi (netstandard1.0)'
+            Before:
+                    }
+
+                    /// <summary>
+            After:
+                    }
+
+                    /// <summary>
+            */
+
+            /* Unmerged change from project 'indice.Edi (netstandard2.0)'
+            Before:
+                    }
+
+                    /// <summary>
+            After:
+                    }
+
+                    /// <summary>
+            */
+
+            /* Unmerged change from project 'indice.Edi (net5.0)'
+            Before:
+                    }
+
+                    /// <summary>
+            After:
+                    }
+
+                    /// <summary>
+            */
         }
-        
+
         /// <summary>
         /// Returns a string that represents the condition.
         /// </summary>
@@ -135,12 +176,12 @@ namespace indice.Edi.Serialization
         public override string ToString() {
             switch (CheckFor) {
                 case EdiConditionCheckType.Equal:
-                    if(Options == null || Options.Length == 1) {
+                    if (Options == null || Options.Length == 1) {
                         return $"Condition = {MatchValue}";
                     }
                     return $"Condition in ({string.Join(", ", Options)})";
                 case EdiConditionCheckType.NotEqual:
-                    if(Options == null || Options.Length == 1) {
+                    if (Options == null || Options.Length == 1) {
                         return $"Condition != {MatchValue}";
                     }
                     return $"Condition not in ({string.Join(", ", Options)})";

@@ -1,15 +1,14 @@
-﻿using indice.Edi.Serialization;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using indice.Edi.Serialization;
 
 namespace indice.Edi.Tests.Models
 {
     /// <summary>
     /// Purchase Order 850
     /// </summary>
-    public class Invoice_810 {
+    public class Invoice_810
+    {
 
         #region ISA and IEA
         [EdiValue("9(2)", Path = "ISA/0", Description = "ISA01 - Authorization Information Qualifier")]
@@ -69,7 +68,8 @@ namespace indice.Edi.Tests.Models
         public List<FunctionalGroup> Groups { get; set; }
 
         [EdiGroup]
-        public class FunctionalGroup {
+        public class FunctionalGroup
+        {
 
             [EdiValue("X(2)", Path = "GS/0", Description = "GS01 - Functional Identifier Code")]
             public string FunctionalIdentifierCode { get; set; }
@@ -104,7 +104,8 @@ namespace indice.Edi.Tests.Models
         }
 
         [EdiMessage]
-        public class Invoice {
+        public class Invoice
+        {
             #region Header Trailer
 
             [EdiValue("X(3)", Path = "ST/0", Description = "ST01 - Transaction set ID code")]

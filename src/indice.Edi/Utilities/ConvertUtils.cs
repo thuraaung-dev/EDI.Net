@@ -25,10 +25,19 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.ComponentModel;
+using System.Globalization;
+
+/* Unmerged change from project 'indice.Edi (netstandard1.0)'
+Before:
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Reflection;
+After:
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
+*/
 using System.Reflection;
 #if !(PORTABLE || NETSTANDARD10)
 using System.Numerics;
@@ -177,13 +186,11 @@ namespace indice.Edi.Utilities
 #endif
 
         public static PrimitiveTypeCode GetTypeCode(Type t) {
-            bool isEnum;
-            return GetTypeCode(t, out isEnum);
+            return GetTypeCode(t, out var isEnum);
         }
 
         public static PrimitiveTypeCode GetTypeCode(Type t, out bool isEnum) {
-            PrimitiveTypeCode typeCode;
-            if (TypeCodeMap.TryGetValue(t, out typeCode)) {
+            if (TypeCodeMap.TryGetValue(t, out var typeCode)) {
                 isEnum = false;
                 return typeCode;
             }
@@ -195,9 +202,9 @@ namespace indice.Edi.Utilities
 
             // performance?
             if (ReflectionUtils.IsNullableType(t)) {
-                Type nonNullable = Nullable.GetUnderlyingType(t);
+                var nonNullable = Nullable.GetUnderlyingType(t);
                 if (nonNullable.IsEnum()) {
-                    Type nullableUnderlyingType = typeof(Nullable<>).MakeGenericType(Enum.GetUnderlyingType(nonNullable));
+                    var nullableUnderlyingType = typeof(Nullable<>).MakeGenericType(Enum.GetUnderlyingType(nonNullable));
                     isEnum = true;
                     return GetTypeCode(nullableUnderlyingType);
                 }
@@ -208,9 +215,8 @@ namespace indice.Edi.Utilities
         }
 
 #if !(PORTABLE || NETSTANDARD10)
-        public static TypeInformation GetTypeInformation(IConvertible convertable)
-        {
-            TypeInformation typeInformation = PrimitiveTypeCodes[(int)convertable.GetTypeCode()];
+        public static TypeInformation GetTypeInformation(IConvertible convertable) {
+            var typeInformation = PrimitiveTypeCodes[(int)convertable.GetTypeCode()];
             return typeInformation;
         }
 #endif
@@ -268,7 +274,7 @@ namespace indice.Edi.Utilities
             new ThreadSafeStore<TypeConvertKey, Func<object, object>>(CreateCastConverter);
 
         private static Func<object, object> CreateCastConverter(TypeConvertKey t) {
-            MethodInfo castMethodInfo = t.TargetType.GetMethod("op_Implicit", new[] { t.InitialType });
+            var castMethodInfo = t.TargetType.GetMethod("op_Implicit", new[] { t.InitialType });
             if (castMethodInfo == null) {
                 castMethodInfo = t.TargetType.GetMethod("op_Explicit", new[] { t.InitialType });
             }
@@ -284,81 +290,61 @@ namespace indice.Edi.Utilities
         }
 
 #if !(PORTABLE || NETSTANDARD10)
-        internal static BigInteger ToBigInteger(object value)
-        {
-            if (value is BigInteger)
-            {
+        internal static BigInteger ToBigInteger(object value) {
+            if (value is BigInteger) {
                 return (BigInteger)value;
             }
-            if (value is string)
-            {
+            if (value is string) {
                 return BigInteger.Parse((string)value, CultureInfo.InvariantCulture);
             }
-            if (value is float)
-            {
+            if (value is float) {
                 return new BigInteger((float)value);
             }
-            if (value is double)
-            {
+            if (value is double) {
                 return new BigInteger((double)value);
             }
-            if (value is decimal)
-            {
+            if (value is decimal) {
                 return new BigInteger((decimal)value);
             }
-            if (value is int)
-            {
+            if (value is int) {
                 return new BigInteger((int)value);
             }
-            if (value is long)
-            {
+            if (value is long) {
                 return new BigInteger((long)value);
             }
-            if (value is uint)
-            {
+            if (value is uint) {
                 return new BigInteger((uint)value);
             }
-            if (value is ulong)
-            {
+            if (value is ulong) {
                 return new BigInteger((ulong)value);
             }
-            if (value is byte[])
-            {
+            if (value is byte[]) {
                 return new BigInteger((byte[])value);
             }
 
             throw new InvalidCastException("Cannot convert {0} to BigInteger.".FormatWith(CultureInfo.InvariantCulture, value.GetType()));
         }
 
-        public static object FromBigInteger(BigInteger i, Type targetType)
-        {
-            if (targetType == typeof(decimal))
-            {
+        public static object FromBigInteger(BigInteger i, Type targetType) {
+            if (targetType == typeof(decimal)) {
                 return (decimal)i;
             }
-            if (targetType == typeof(double))
-            {
+            if (targetType == typeof(double)) {
                 return (double)i;
             }
-            if (targetType == typeof(float))
-            {
+            if (targetType == typeof(float)) {
                 return (float)i;
             }
-            if (targetType == typeof(ulong))
-            {
+            if (targetType == typeof(ulong)) {
                 return (ulong)i;
             }
-            if (targetType == typeof(bool))
-            {
+            if (targetType == typeof(bool)) {
                 return i != 0;
             }
 
-            try
-            {
+            try {
                 return System.Convert.ChangeType((long)i, targetType, CultureInfo.InvariantCulture);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 throw new InvalidOperationException("Can not convert from BigInteger to {0}.".FormatWith(CultureInfo.InvariantCulture, targetType), ex);
             }
         }
@@ -374,8 +360,7 @@ namespace indice.Edi.Utilities
         }
 
         public static object Convert(object initialValue, CultureInfo culture, Type targetType) {
-            object value;
-            switch (TryConvertInternal(initialValue, culture, targetType, out value)) {
+            switch (TryConvertInternal(initialValue, culture, targetType, out var value)) {
                 case ConvertResult.Success:
                     return value;
                 case ConvertResult.CannotConvertNull:
@@ -412,7 +397,7 @@ namespace indice.Edi.Utilities
                 targetType = Nullable.GetUnderlyingType(targetType);
             }
 
-            Type initialType = initialValue.GetType();
+            var initialType = initialValue.GetType();
 
             if (targetType == initialType) {
                 value = initialValue;
@@ -450,7 +435,7 @@ namespace indice.Edi.Utilities
                 return ConvertResult.Success;
             }
 
-            string s = initialValue as string;
+            var s = initialValue as string;
             if (s != null) {
                 if (targetType == typeof(Guid)) {
                     value = new Guid(s);
@@ -469,8 +454,7 @@ namespace indice.Edi.Utilities
                     return ConvertResult.Success;
                 }
                 if (targetType == typeof(Version)) {
-                    Version result;
-                    if (VersionTryParse(s, out result)) {
+                    if (VersionTryParse(s, out var result)) {
                         value = result;
                         return ConvertResult.Success;
                     }
@@ -484,13 +468,11 @@ namespace indice.Edi.Utilities
             }
 
 #if !(PORTABLE || NETSTANDARD10)
-            if (targetType == typeof(BigInteger))
-            {
+            if (targetType == typeof(BigInteger)) {
                 value = ToBigInteger(initialValue);
                 return ConvertResult.Success;
             }
-            if (initialValue is BigInteger)
-            {
+            if (initialValue is BigInteger) {
                 value = FromBigInteger((BigInteger)initialValue, targetType);
                 return ConvertResult.Success;
             }
@@ -498,28 +480,24 @@ namespace indice.Edi.Utilities
 
 #if !PORTABLE
             // see if source or target types have a TypeConverter that converts between the two
-            TypeConverter toConverter = GetConverter(initialType);
+            var toConverter = GetConverter(initialType);
 
-            if (toConverter != null && toConverter.CanConvertTo(targetType))
-            {
+            if (toConverter != null && toConverter.CanConvertTo(targetType)) {
                 value = toConverter.ConvertTo(null, culture, initialValue, targetType);
                 return ConvertResult.Success;
             }
 
-            TypeConverter fromConverter = GetConverter(targetType);
+            var fromConverter = GetConverter(targetType);
 
-            if (fromConverter != null && fromConverter.CanConvertFrom(initialType))
-            {
+            if (fromConverter != null && fromConverter.CanConvertFrom(initialType)) {
                 value = fromConverter.ConvertFrom(null, culture, initialValue);
                 return ConvertResult.Success;
             }
 #endif
 #if !(PORTABLE || NETSTANDARD10 || NETSTANDARD13)
             // handle DBNull and INullable
-            if (initialValue == DBNull.Value)
-            {
-                if (ReflectionUtils.IsNullable(targetType))
-                {
+            if (initialValue == DBNull.Value) {
+                if (ReflectionUtils.IsNullable(targetType)) {
                     value = EnsureTypeAssignable(null, initialType, targetType);
                     return ConvertResult.Success;
                 }
@@ -528,8 +506,7 @@ namespace indice.Edi.Utilities
                 value = null;
                 return ConvertResult.CannotConvertNull;
             }
-            if (initialValue is INullable)
-            {
+            if (initialValue is INullable) {
                 value = EnsureTypeAssignable(ToValue((INullable)initialValue), initialType, targetType);
                 return ConvertResult.Success;
             }
@@ -558,7 +535,6 @@ namespace indice.Edi.Utilities
         /// is returned if assignable to the target type.
         /// </returns>
         public static object ConvertOrCast(object initialValue, CultureInfo culture, Type targetType) {
-            object convertedValue;
 
             if (targetType == typeof(object)) {
                 return initialValue;
@@ -568,7 +544,7 @@ namespace indice.Edi.Utilities
                 return null;
             }
 
-            if (TryConvert(initialValue, culture, targetType, out convertedValue)) {
+            if (TryConvert(initialValue, culture, targetType, out var convertedValue)) {
                 return convertedValue;
             }
 
@@ -577,14 +553,42 @@ namespace indice.Edi.Utilities
         #endregion
 
         private static object EnsureTypeAssignable(object value, Type initialType, Type targetType) {
-            Type valueType = (value != null) ? value.GetType() : null;
+            var valueType = (value != null) ? value.GetType() : null;
 
             if (value != null) {
                 if (targetType.IsAssignableFrom(valueType)) {
                     return value;
                 }
 
-                Func<object, object> castConverter = CastConverters.Get(new TypeConvertKey(valueType, targetType));
+
+                /* Unmerged change from project 'indice.Edi (netstandard1.3)'
+                Before:
+                                Func<object, object> castConverter = CastConverters.Get(new TypeConvertKey(valueType, targetType));
+                After:
+                                var castConverter = CastConverters.Get(new TypeConvertKey(valueType, targetType));
+                */
+
+                /* Unmerged change from project 'indice.Edi (netstandard1.0)'
+                Before:
+                                Func<object, object> castConverter = CastConverters.Get(new TypeConvertKey(valueType, targetType));
+                After:
+                                var castConverter = CastConverters.Get(new TypeConvertKey(valueType, targetType));
+                */
+
+                /* Unmerged change from project 'indice.Edi (netstandard2.0)'
+                Before:
+                                Func<object, object> castConverter = CastConverters.Get(new TypeConvertKey(valueType, targetType));
+                After:
+                                var castConverter = CastConverters.Get(new TypeConvertKey(valueType, targetType));
+                */
+
+                /* Unmerged change from project 'indice.Edi (net5.0)'
+                Before:
+                                Func<object, object> castConverter = CastConverters.Get(new TypeConvertKey(valueType, targetType));
+                After:
+                                var castConverter = CastConverters.Get(new TypeConvertKey(valueType, targetType));
+                */
+                var castConverter = CastConverters.Get(new TypeConvertKey(valueType, targetType));
                 if (castConverter != null) {
                     return castConverter(value);
                 }
@@ -598,30 +602,18 @@ namespace indice.Edi.Utilities
         }
 
 #if !(PORTABLE || NETSTANDARD10 || NETSTANDARD13)
-        public static object ToValue(INullable nullableValue)
-        {
-            if (nullableValue == null)
-            {
+        public static object ToValue(INullable nullableValue) {
+            if (nullableValue == null) {
                 return null;
-            }
-            else if (nullableValue is SqlInt32)
-            {
+            } else if (nullableValue is SqlInt32) {
                 return ToValue((SqlInt32)nullableValue);
-            }
-            else if (nullableValue is SqlInt64)
-            {
+            } else if (nullableValue is SqlInt64) {
                 return ToValue((SqlInt64)nullableValue);
-            }
-            else if (nullableValue is SqlBoolean)
-            {
+            } else if (nullableValue is SqlBoolean) {
                 return ToValue((SqlBoolean)nullableValue);
-            }
-            else if (nullableValue is SqlString)
-            {
+            } else if (nullableValue is SqlString) {
                 return ToValue((SqlString)nullableValue);
-            }
-            else if (nullableValue is SqlDateTime)
-            {
+            } else if (nullableValue is SqlDateTime) {
                 return ToValue((SqlDateTime)nullableValue);
             }
 
@@ -630,8 +622,7 @@ namespace indice.Edi.Utilities
 #endif
 
 #if !PORTABLE
-        internal static TypeConverter GetConverter(Type t)
-        {
+        internal static TypeConverter GetConverter(Type t) {
             return TypeDescriptor.GetConverter(t);
         }
 #endif
@@ -663,7 +654,7 @@ namespace indice.Edi.Utilities
                 return ParseResult.Invalid;
             }
 
-            bool isNegative = (chars[start] == '-');
+            var isNegative = (chars[start] == '-');
 
             if (isNegative) {
                 // text just a negative sign
@@ -675,15 +666,15 @@ namespace indice.Edi.Utilities
                 length--;
             }
 
-            int end = start + length;
+            var end = start + length;
 
             // Int32.MaxValue and MinValue are 10 chars
             // Or is 10 chars and start is greater than two
             // Need to improve this!
             if (length > 10 || (length == 10 && chars[start] - '0' > 2)) {
                 // invalid result takes precedence over overflow
-                for (int i = start; i < end; i++) {
-                    int c = chars[i] - '0';
+                for (var i = start; i < end; i++) {
+                    var c = chars[i] - '0';
 
                     if (c < 0 || c > 9) {
                         return ParseResult.Invalid;
@@ -693,14 +684,14 @@ namespace indice.Edi.Utilities
                 return ParseResult.Overflow;
             }
 
-            for (int i = start; i < end; i++) {
-                int c = chars[i] - '0';
+            for (var i = start; i < end; i++) {
+                var c = chars[i] - '0';
 
                 if (c < 0 || c > 9) {
                     return ParseResult.Invalid;
                 }
 
-                int newValue = (10 * value) - c;
+                var newValue = (10 * value) - c;
 
                 // overflow has caused the number to loop around
                 if (newValue > value) {
@@ -743,7 +734,7 @@ namespace indice.Edi.Utilities
                 return ParseResult.Invalid;
             }
 
-            bool isNegative = (chars[start] == '-');
+            var isNegative = (chars[start] == '-');
 
             if (isNegative) {
                 // text just a negative sign
@@ -755,13 +746,13 @@ namespace indice.Edi.Utilities
                 length--;
             }
 
-            int end = start + length;
+            var end = start + length;
 
             // Int64.MaxValue and MinValue are 19 chars
             if (length > 19) {
                 // invalid result takes precedence over overflow
-                for (int i = start; i < end; i++) {
-                    int c = chars[i] - '0';
+                for (var i = start; i < end; i++) {
+                    var c = chars[i] - '0';
 
                     if (c < 0 || c > 9) {
                         return ParseResult.Invalid;
@@ -771,14 +762,14 @@ namespace indice.Edi.Utilities
                 return ParseResult.Overflow;
             }
 
-            for (int i = start; i < end; i++) {
-                int c = chars[i] - '0';
+            for (var i = start; i < end; i++) {
+                var c = chars[i] - '0';
 
                 if (c < 0 || c > 9) {
                     return ParseResult.Invalid;
                 }
 
-                long newValue = (10 * value) - c;
+                var newValue = (10 * value) - c;
 
                 // overflow has caused the number to loop around
                 if (newValue > value) {
@@ -838,8 +829,8 @@ namespace indice.Edi.Utilities
         }
 
         public static int HexTextToInt(char[] text, int start, int end) {
-            int value = 0;
-            for (int i = start; i < end; i++) {
+            var value = 0;
+            for (var i = start; i < end; i++) {
                 value += HexCharToInt(text[i]) << ((end - 1 - i) * 4);
             }
             return value;

@@ -35,44 +35,40 @@ namespace indice.Edi.Utilities
         private Dictionary<TKey, TValue> _store;
         private readonly Func<TKey, TValue> _creator;
 
-        public ThreadSafeStore(Func<TKey, TValue> creator)
-        {
-            if (creator == null)
+        public ThreadSafeStore(Func<TKey, TValue> creator) {
+            if (creator == null) {
                 throw new ArgumentNullException(nameof(creator));
+            }
 
             _creator = creator;
             _store = new Dictionary<TKey, TValue>();
         }
 
-        public TValue Get(TKey key)
-        {
-            TValue value;
-            if (!_store.TryGetValue(key, out value))
+        public TValue Get(TKey key) {
+            if (!_store.TryGetValue(key, out var value)) {
                 return AddValue(key);
+            }
 
             return value;
         }
 
-        private TValue AddValue(TKey key)
-        {
-            TValue value = _creator(key);
+        private TValue AddValue(TKey key) {
+            var value = _creator(key);
 
-            lock (_lock)
-            {
-                if (_store == null)
-                {
-                    _store = new Dictionary<TKey, TValue>();
-                    _store[key] = value;
-                }
-                else
-                {
+            lock (_lock) {
+                if (_store == null) {
+                    _store = new Dictionary<TKey, TValue> {
+                        [key] = value
+                    };
+                } else {
                     // double check locking
-                    TValue checkValue;
-                    if (_store.TryGetValue(key, out checkValue))
+                    if (_store.TryGetValue(key, out var checkValue)) {
                         return checkValue;
+                    }
 
-                    Dictionary<TKey, TValue> newStore = new Dictionary<TKey, TValue>(_store);
-                    newStore[key] = value;
+                    var newStore = new Dictionary<TKey, TValue>(_store) {
+                        [key] = value
+                    };
 
 #if !(PORTABLE || NETSTANDARD10 || NETSTANDARD13)
                     Thread.MemoryBarrier();

@@ -52,16 +52,18 @@ namespace indice.Edi.Utilities
 
         public void Append(char value) {
             // test if the buffer array is large enough to take the value
-            if (_position == _buffer.Length)
+            if (_position == _buffer.Length) {
                 EnsureSize(1);
+            }
 
             // set value and increment poisition
             _buffer[_position++] = value;
         }
 
         public void Append(char[] buffer, int startIndex, int count) {
-            if (_position + count >= _buffer.Length)
+            if (_position + count >= _buffer.Length) {
                 EnsureSize(count);
+            }
 
             Array.Copy(buffer, startIndex, _buffer, _position, count);
 
@@ -74,7 +76,7 @@ namespace indice.Edi.Utilities
         }
 
         private void EnsureSize(int appendLength) {
-            char[] newBuffer = new char[(_position + appendLength) * 2];
+            var newBuffer = new char[(_position + appendLength) * 2];
 
             Array.Copy(_buffer, newBuffer, _position);
 

@@ -14,8 +14,7 @@ namespace indice.Edi.Tests.Models
 
         #region Properties
 
-        public List<Nachricht> ListNachricht
-        {
+        public List<Nachricht> ListNachricht {
             get { return _listnachricht; }
             set { _listnachricht = value; }
         }
@@ -38,24 +37,21 @@ namespace indice.Edi.Tests.Models
 
             [EdiValue("X(3)")]
             [EdiPath("CTA/0/0")]
-            public string Funktion
-            {
+            public string Funktion {
                 get { return _funktion; }
                 set { _funktion = value; }
             }
 
             [EdiValue("X(17)")]
             [EdiPath("CTA/1/0")]
-            public string Kontaktnummer
-            {
+            public string Kontaktnummer {
                 get { return _kontaktnummer; }
                 set { _kontaktnummer = value; }
             }
 
             [EdiValue("X(0)")]
             [EdiPath("CTA/1/1")]
-            public string Kontakt
-            {
+            public string Kontakt {
                 get { return _kontakt; }
                 set { _kontakt = value; }
             }
@@ -80,22 +76,19 @@ namespace indice.Edi.Tests.Models
             #region Properties
 
             [EdiValue("X(3)", Path = "DTM/0/0")]
-            public string Code
-            {
+            public string Code {
                 get { return _code; }
                 set { _code = value; }
             }
 
             [EdiValue("X(35)", Path = "DTM/0/1")]
-            public string Datum
-            {
+            public string Datum {
                 get { return _datum; }
                 set { _datum = value; }
             }
 
             [EdiValue("X(3)", Path = "DTM/0/2")]
-            public string Format
-            {
+            public string Format {
                 get { return _format; }
                 set { _format = value; }
             }
@@ -116,15 +109,13 @@ namespace indice.Edi.Tests.Models
             #region Properties
 
             [EdiCondition("MR", Path = "NAD/0/0")]
-            public NAD Empfaenger
-            {
+            public NAD Empfaenger {
                 get { return _empfaenger; }
                 set { _empfaenger = value; }
             }
 
-            [EdiCondition("MS", Path="NAD/0/0")]
-            public NAD Absender
-            {
+            [EdiCondition("MS", Path = "NAD/0/0")]
+            public NAD Absender {
                 get { return _absender; }
                 set { _absender = value; }
             }
@@ -152,28 +143,24 @@ namespace indice.Edi.Tests.Models
             #region Properties
 
             [EdiValue("X(3)", Path = "NAD/0/0")]
-            public string Qualifier
-            {
+            public string Qualifier {
                 get { return _qualifier; }
                 set { _qualifier = value; }
             }
 
-            [EdiValue("X(35)", Path="NAD/1/0")]
-            public string ID
-            {
+            [EdiValue("X(35)", Path = "NAD/1/0")]
+            public string ID {
                 get { return _id; }
                 set { _id = value; }
             }
 
-            [EdiValue("X(3)", Path= "NAD/1/2")]
-            public string Code
-            {
+            [EdiValue("X(3)", Path = "NAD/1/2")]
+            public string Code {
                 get { return _code; }
                 set { _code = value; }
             }
 
-            public CTA CTA
-            {
+            public CTA CTA {
                 get { return _cta; }
                 set { _cta = value; }
             }
@@ -196,15 +183,13 @@ namespace indice.Edi.Tests.Models
             #region Properties
 
             [EdiValue("X(70)", Path = "RFF/0/0")]
-            public string Code
-            {
+            public string Code {
                 get { return _code; }
                 set { _code = value; }
             }
 
             [EdiValue("X(3)", Path = "RFF/0/1")]
-            public string Qualifier
-            {
+            public string Qualifier {
                 get { return _qualifier; }
                 set { _qualifier = value; }
             }
@@ -239,8 +224,7 @@ namespace indice.Edi.Tests.Models
                 set { _qualifier = value; }
             }
 
-            public DTM Referenz_der_Anfragedatum
-            {
+            public DTM Referenz_der_Anfragedatum {
                 get { return _referenzDatum; }
                 set { _referenzDatum = value; }
             }

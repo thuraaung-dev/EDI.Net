@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace indice.Edi.Tests
+﻿namespace indice.Edi.Tests
 {
     public class Traits
     {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using indice.Edi.Serialization;
 
 namespace indice.Edi.Tests.Models
@@ -125,8 +124,8 @@ namespace indice.Edi.Tests.Models
             private DateTime? _Arrival;
             [EdiValue("9(6)", Path = "*/0/2", Format = "ddMMyy", Description = "Date")]
             [EdiValue("9(4)", Path = "*/0/3", Format = "HHmm", Description = "Time")]
-            public DateTime? Arrival { 
-                get => _Arrival ?? Departure?.Date; 
+            public DateTime? Arrival {
+                get => _Arrival ?? Departure?.Date;
                 set => _Arrival = value;
             }
 
@@ -174,10 +173,10 @@ namespace indice.Edi.Tests.Models
         /// C085
         /// </summary>
         [EdiElement]
-        public class MaritalStatusDetails                     
+        public class MaritalStatusDetails
         {
             [EdiValue("X(3)", Path = "*/*/0")]
-            public string MaritalStatusDescriptionCode  { get; set; }
+            public string MaritalStatusDescriptionCode { get; set; }
             [EdiValue("X(17)", Path = "*/*/1")]
             public string CodeListIdentificationCode { get; set; }
             [EdiValue("X(3)", Path = "*/*/2")]
@@ -232,10 +231,10 @@ namespace indice.Edi.Tests.Models
         }
 
         [EdiElement]
-        public class TerminalInformation 
+        public class TerminalInformation
         {
             [EdiValue("X(6)", Path = "*/*/0")]
-            public string GateIdentification  { get; set; }
+            public string GateIdentification { get; set; }
             [EdiValue("X(25)", Path = "*/*/1")]
             public string RelatedPlaceLocationOneIdentification { get; set; }
             [EdiValue("X(25)", Path = "*/*/2")]

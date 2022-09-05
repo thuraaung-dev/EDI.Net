@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 using indice.Edi.Serialization;
 using Newtonsoft.Json;
@@ -640,14 +638,14 @@ namespace indice.Edi.Tests.Models
             public string x_0081 { get; set; }
         }
 
-        [EdiSegmentGroup("UNS", "CNT", "MOA", "RFF", "DTM","TAX","ALC")]
-        public class UNS_Group : UNS 
+        [EdiSegmentGroup("UNS", "CNT", "MOA", "RFF", "DTM", "TAX", "ALC")]
+        public class UNS_Group : UNS
         {
             [JsonProperty("SG52")]
             [XmlElement(ElementName = "SG52")]
             public List<TAX_Group> SG52 { get; set; }
         }
 
-        
+
     }
 }

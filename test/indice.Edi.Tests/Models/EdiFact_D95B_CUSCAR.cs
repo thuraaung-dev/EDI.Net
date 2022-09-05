@@ -1,5 +1,5 @@
-﻿using indice.Edi.Serialization;
-using System;
+﻿using System;
+using indice.Edi.Serialization;
 
 namespace indice.Edi.Tests.Models
 {
@@ -34,7 +34,7 @@ namespace indice.Edi.Tests.Models
 
 
         public Message_D95B Message { get; set; }
-        
+
 
 
 
@@ -148,7 +148,7 @@ namespace indice.Edi.Tests.Models
 
         public DTM[] DTM { get; set; }
     }
-    
+
     /*
       You cannot use a class CNI e.g.
 
@@ -195,7 +195,7 @@ namespace indice.Edi.Tests.Models
         public NAD[] NAD { get; set; }
         public GID_Group10[] GID_Group10 { get; set; }
     }
-    
+
     [EdiSegmentGroup("GID", SequenceEnd = "SPG")]
     public class GID_Group10
     {
@@ -272,7 +272,7 @@ namespace indice.Edi.Tests.Models
         [EdiValue(Path = "NAD/2")]
         public string Field3 { get; set; }
     }
-    
+
     [EdiSegment, EdiPath("LOC")]
     public class LOC
     {

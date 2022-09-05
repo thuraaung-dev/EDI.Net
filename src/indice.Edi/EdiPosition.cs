@@ -1,8 +1,8 @@
-using indice.Edi.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using indice.Edi.Utilities;
 
 namespace indice.Edi
 {
@@ -32,10 +32,11 @@ namespace indice.Edi
         internal void WriteTo(StringBuilder sb) {
             switch (Type) {
                 case EdiContainerType.Segment:
-                    if (sb.Length > 0)
+                    if (sb.Length > 0) {
                         sb.Append('.');
+                    }
 
-                    string segmentName = SegmentName;
+                    var segmentName = SegmentName;
                     sb.Append(segmentName);
                     break;
                 case EdiContainerType.Element:
@@ -66,16 +67,18 @@ namespace indice.Edi
             if (!message.EndsWith(Environment.NewLine, StringComparison.Ordinal)) {
                 message = message.Trim();
 
-                if (!message.EndsWith('.'))
+                if (!message.EndsWith('.')) {
                     message += ".";
+                }
 
                 message += " ";
             }
 
             message += "Path '{0}'".FormatWith(CultureInfo.InvariantCulture, path);
 
-            if (lineInfo != null && lineInfo.HasLineInfo())
+            if (lineInfo != null && lineInfo.HasLineInfo()) {
                 message += ", line {0}, position {1}".FormatWith(CultureInfo.InvariantCulture, lineInfo.LineNumber, lineInfo.LinePosition);
+            }
 
             message += ".";
 
@@ -93,9 +96,8 @@ namespace indice.Edi
 
         internal void AdvanceContrlCount(IEdiGrammar grammar) {
             if (SegmentName == grammar.FunctionalGroupTrailerTag) {
-                SegmentCount +=2; // take into account one more (the header)
-            }
-            else if (SegmentName == grammar.InterchangeTrailerTag) {
+                SegmentCount += 2; // take into account one more (the header)
+            } else if (SegmentName == grammar.InterchangeTrailerTag) {
                 SegmentCount += SegmentCountCache;
             } else if (SegmentName == grammar.FunctionalGroupHeaderTag) {
                 GroupCount++;
@@ -103,7 +105,7 @@ namespace indice.Edi
                 SegmentCountCache += SegmentCount;
                 SegmentCount = 1;
             } else if (SegmentName == grammar.MessageHeaderTag) {
-                MessageCount++; 
+                MessageCount++;
                 SegmentCountCache += SegmentCount;
                 SegmentCount = 1;
             } else {

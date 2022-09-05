@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using indice.Edi.Serialization;
 using indice.Edi.Utilities;
 
 namespace indice.Edi.Tests.Models
 {
-    class X12_873_Issue_143
+    internal class X12_873_Issue_143
     {
 
         [EdiValue("9(2)", Path = "ISA/0", Description = "I01 - Authorization Information Qualifier")]
@@ -118,7 +117,7 @@ namespace indice.Edi.Tests.Models
         }
 
         [EdiSegment, EdiPath("BGN")]
-        public class BGN 
+        public class BGN
         {
             [EdiValue("X(2)", Path = "BGN/0", Description = "Transaction Set Purpose Code")]
             public string TransactionSetPurposeCode { get; set; }

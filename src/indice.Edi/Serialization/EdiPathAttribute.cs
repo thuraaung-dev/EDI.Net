@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace indice.Edi.Serialization
 {
@@ -59,8 +55,8 @@ namespace indice.Edi.Serialization
         /// constructs the <see cref="EdiPathAttribute"/>
         /// </summary>
         /// <param name="path">Expects a string representation of an <see cref="EdiPath"/> pointing to a structure ie: "XYZ" or "XYZ/0"</param>
-        public EdiPathAttribute(string path) 
-            : this((EdiPath)path){
+        public EdiPathAttribute(string path)
+            : this((EdiPath)path) {
 
         }
 
@@ -70,7 +66,7 @@ namespace indice.Edi.Serialization
         /// <param name="segmentPart"></param>
         /// <param name="elementPart"></param>
         /// <param name="componentPart"></param>
-        public EdiPathAttribute(string segmentPart, string elementPart, string componentPart) 
+        public EdiPathAttribute(string segmentPart, string elementPart, string componentPart)
             : this(new EdiPath(new EdiPathFragment(segmentPart), new EdiPathFragment(elementPart), new EdiPathFragment(componentPart))) {
 
         }

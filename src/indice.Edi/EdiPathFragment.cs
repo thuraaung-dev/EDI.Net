@@ -8,7 +8,7 @@ namespace indice.Edi
     /// </summary>
     public struct EdiPathFragment : IComparable, IEquatable<EdiPathFragment>
     {
-        private static Regex _RangePattern = new Regex(@"^(\d+|\*)\.\.(\d+|\*)$");
+        private static readonly Regex _RangePattern = new Regex(@"^(\d+|\*)\.\.(\d+|\*)$");
         private readonly string _Value;
 
         /// <summary>
@@ -33,10 +33,11 @@ namespace indice.Edi
         /// </summary>
         public int Index {
             get {
-                if (string.IsNullOrEmpty(Value))
+                if (string.IsNullOrEmpty(Value)) {
                     return 0;
-                var index = 0;
-                if (int.TryParse(Value, out index)) {
+                }
+
+                if (int.TryParse(Value, out var index)) {
                     return index;
                 }
                 throw new InvalidCastException(string.Format("Cannot convert the fragment value \"{0}\" to an Index. Must be a positive integer", Value));
@@ -48,15 +49,19 @@ namespace indice.Edi
         /// </summary>
         public int Min {
             get {
-                if (!IsRange) return HasIndex ? Index : 0;
-                if ("*..*".Equals(Value))
+                if (!IsRange) {
+                    return HasIndex ? Index : 0;
+                }
+
+                if ("*..*".Equals(Value)) {
                     throw new InvalidCastException(string.Format("Cannot convert the fragment value \"{0}\" to range. Use * instead", Value));
+                }
+
                 var min = _RangePattern.Match(Value).Groups[1].Value;
                 if ("*".Equals(min)) {
                     return 0;
                 }
-                var index = 0;
-                if (int.TryParse(min, out index)) {
+                if (int.TryParse(min, out var index)) {
                     return index;
                 }
                 throw new InvalidCastException(string.Format("Cannot convert the fragment value \"{0}\" to range. Minimum must be the * or a positive integer", Value));
@@ -68,15 +73,19 @@ namespace indice.Edi
         /// </summary>
         public int Max {
             get {
-                if (!IsRange) return HasIndex ? Index : 0; 
-                if ("*..*".Equals(Value))
+                if (!IsRange) {
+                    return HasIndex ? Index : 0;
+                }
+
+                if ("*..*".Equals(Value)) {
                     throw new InvalidCastException(string.Format("Cannot convert the fragment value \"{0}\" to range. Use * instead", Value));
+                }
+
                 var max = _RangePattern.Match(Value).Groups[2].Value;
                 if ("*".Equals(max)) {
                     return int.MaxValue;
                 }
-                var index = 0;
-                if (int.TryParse(max, out index)) {
+                if (int.TryParse(max, out var index)) {
                     return index;
                 }
                 throw new InvalidCastException(string.Format("Cannot convert the fragment value \"{0}\" to range. Maximum must be the * or a positive integer", Value));
@@ -155,12 +164,11 @@ namespace indice.Edi
         /// <param name="other">The object to check equality with</param>
         /// <returns></returns>
         public bool Equals(EdiPathFragment other) {
-            bool eq = IsWildcard || other.IsWildcard || (HasIndex && other.HasIndex && Index.Equals(other.Index)) || Value.Equals(other.Value);
+            var eq = IsWildcard || other.IsWildcard || (HasIndex && other.HasIndex && Index.Equals(other.Index)) || Value.Equals(other.Value);
 
             if (!eq && (IsRange || other.HasIndex)) {
                 return Min <= other.Index && Max >= other.Index;
-            }
-            else if (!eq && (HasIndex || other.IsRange)) {
+            } else if (!eq && (HasIndex || other.IsRange)) {
                 return other.Min <= Index && other.Max >= Index;
             }
             return eq;
@@ -200,44 +208,44 @@ namespace indice.Edi
             return 0;
         }
 
-    /// <summary>
-    /// Returns the value of this <see cref="EdiPathFragment"/> or the wildcard character <code>'*'</code>.
-    /// </summary>
-    /// <returns></returns>
-    public override string ToString() {
-        return Value;
-    }
+        /// <summary>
+        /// Returns the value of this <see cref="EdiPathFragment"/> or the wildcard character <code>'*'</code>.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString() {
+            return Value;
+        }
 
-    /// <summary>
-    /// Implicit cast operator from <see cref="EdiPathFragment"/> to <seealso cref="string"/>
-    /// </summary>
-    /// <param name="value"></param>
-    public static implicit operator string(EdiPathFragment value) {
-        return value.ToString();
-    }
+        /// <summary>
+        /// Implicit cast operator from <see cref="EdiPathFragment"/> to <seealso cref="string"/>
+        /// </summary>
+        /// <param name="value"></param>
+        public static implicit operator string(EdiPathFragment value) {
+            return value.ToString();
+        }
 
-    /// <summary>
-    /// Explicit cast operator from <see cref="string"/> to <seealso cref="EdiPath"/>
-    /// </summary>
-    /// <param name="value"></param>
-    public static explicit operator EdiPathFragment(string value) {
-        return new EdiPathFragment(value);
-    }
+        /// <summary>
+        /// Explicit cast operator from <see cref="string"/> to <seealso cref="EdiPath"/>
+        /// </summary>
+        /// <param name="value"></param>
+        public static explicit operator EdiPathFragment(string value) {
+            return new EdiPathFragment(value);
+        }
 
-    /// <summary>
-    /// Explicit cast operator from <see cref="int"/> to <seealso cref="EdiPath"/>
-    /// </summary>
-    /// <param name="value"></param>
-    public static explicit operator EdiPathFragment(int value) {
-        return new EdiPathFragment(value.ToString());
-    }
+        /// <summary>
+        /// Explicit cast operator from <see cref="int"/> to <seealso cref="EdiPath"/>
+        /// </summary>
+        /// <param name="value"></param>
+        public static explicit operator EdiPathFragment(int value) {
+            return new EdiPathFragment(value.ToString());
+        }
 
-    /// <summary>
-    /// Explicit cast operator from <see cref="int"/> to <seealso cref="EdiPath"/>
-    /// </summary>
-    /// <param name="value"></param>
-    public static explicit operator int(EdiPathFragment value) {
-        return value.Index;
+        /// <summary>
+        /// Explicit cast operator from <see cref="int"/> to <seealso cref="EdiPath"/>
+        /// </summary>
+        /// <param name="value"></param>
+        public static explicit operator int(EdiPathFragment value) {
+            return value.Index;
+        }
     }
-}
 }

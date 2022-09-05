@@ -1,13 +1,9 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Text;
-using indice.Edi;
+﻿using System.Collections.Generic;
 using indice.Edi.Serialization;
 
 namespace indice.Edi.Tests.Models
 {
-    class Interchange_Issue174
+    internal class Interchange_Issue174
     {
         public Message Msg { get; set; }
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using indice.Edi.Serialization;
 
 namespace indice.Edi.Tests.Models
@@ -608,7 +607,10 @@ namespace indice.Edi.Tests.Models
             public int FormatQualifier { get; set; }
 
             public DateTime? AsDateTime() {
-                if (string.IsNullOrWhiteSpace(Value)) return null;
+                if (string.IsNullOrWhiteSpace(Value)) {
+                    return null;
+                }
+
                 string[] formats = null;
                 switch (FormatQualifier) {
                     case 203:
@@ -624,8 +626,10 @@ namespace indice.Edi.Tests.Models
                         formats = new[] { "yyyyMMdd" };
                         break;
                 }
-                if (DateTime.TryParseExact(Value, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime datetime))
+                if (DateTime.TryParseExact(Value, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out var datetime)) {
                     return datetime;
+                }
+
                 return null;
             }
         }

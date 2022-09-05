@@ -1,8 +1,6 @@
-﻿using indice.Edi.Serialization;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using indice.Edi.Serialization;
 
 namespace indice.Edi.Tests.Models
 {
@@ -34,7 +32,7 @@ namespace indice.Edi.Tests.Models
         [EdiSegment, EdiPath("MHD")]
         public class MessageHead
         {
-            [EdiValue("9(1)", Path = "*/0/0")] 
+            [EdiValue("9(1)", Path = "*/0/0")]
             [EdiCount(EdiCountScope.Messages)]
             public int Position { get; set; }
             public MessageType Type { get; set; }
@@ -62,8 +60,10 @@ namespace indice.Edi.Tests.Models
             public int Version { get; set; }
 
             public override string ToString() {
-                if (!string.IsNullOrWhiteSpace(Name))
+                if (!string.IsNullOrWhiteSpace(Name)) {
                     return $"{Name} v{Version}";
+                }
+
                 return base.ToString();
             }
         }
@@ -168,7 +168,7 @@ namespace indice.Edi.Tests.Models
             public string City { get; set; } //SAD3 - SUPPLIER’S ADDRESS LINE 4
             [EdiValue("9(4)"), EdiPath("*/2/4")]
             public string Zip { get; set; } //SAD4 - SUPPLIER’S POST CODE
-    }
+        }
 
     }
 }

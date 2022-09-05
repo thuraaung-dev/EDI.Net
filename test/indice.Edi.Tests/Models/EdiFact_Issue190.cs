@@ -10,13 +10,13 @@ namespace indice.Edi.Tests.Models
         {
             public List<GivenName> Names { get; set; }
         }
-        
+
         [EdiSegment(Description = "Traveller information"), EdiPath("TIF")]
         public class BUGGEDTIF
         {
             [EdiValue("X(3)", Description = "C322-6353", Path = "TIF/0/1")]          // Added prop only
             public string Category { get; set; }
-        
+
             public List<GivenName> Names { get; set; }
         }
 

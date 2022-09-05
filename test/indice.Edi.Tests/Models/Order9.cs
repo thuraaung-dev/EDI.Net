@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace indice.Edi.Tests.Models
 {
     public class Order9
     {
         public Order9Type OrderType { get; set; }
-        
+
         public Order9Supplier Supplier { get; set; }
-        
+
         public Order9Customer Customer { get; set; }
 
         public string CustomerDepotGLN { get; set; }
@@ -26,12 +24,12 @@ namespace indice.Edi.Tests.Models
         public DateTime OrderDate { get; set; }
 
         public DateTime DepotDateTime { get; set; }
-        
+
         public List<Order9Line> Order9Lines { get; set; }
-        
+
     }
 
-    public class Order9Line 
+    public class Order9Line
     {
         public string LineNo { get; set; }
 

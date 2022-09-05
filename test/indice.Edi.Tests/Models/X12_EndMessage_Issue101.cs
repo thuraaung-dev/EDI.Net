@@ -12,18 +12,18 @@ namespace indice.Edi.Tests.Models
         {
             [EdiValue("9(4)", Path = "ST/1")]
             public string HeaderControl { get; set; }
-            
+
             public Return Return { get; set; }
-            
+
             [EdiValue("9(4)", Path = "SE/1")]
             public string TrailerControl { get; set; }
         }
-		
-		[EdiSegmentGroup("TFS")]
-		public class Return
-		{
-			public FormGroupSegment FormGroupSegment { get; set; }
-		}
+
+        [EdiSegmentGroup("TFS")]
+        public class Return
+        {
+            public FormGroupSegment FormGroupSegment { get; set; }
+        }
 
         [EdiSegmentGroup("FGS")]
         public class FormGroupSegment

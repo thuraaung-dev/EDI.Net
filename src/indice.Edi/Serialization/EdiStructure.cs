@@ -1,12 +1,12 @@
-﻿using indice.Edi.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using indice.Edi.Utilities;
 
 namespace indice.Edi.Serialization
 {
-    internal class EdiStructure {
+    internal class EdiStructure
+    {
         private static readonly ThreadSafeStore<Type, EdiTypeDescriptor> typeStore = new ThreadSafeStore<Type, EdiTypeDescriptor>(GetTypeDescriptor);
         private readonly EdiStructureType _StructureType;
         private readonly EdiStructure _Container;
@@ -23,11 +23,55 @@ namespace indice.Edi.Serialization
         /// </summary>
         public EdiStructureType StructureType {
             get { return _StructureType; }
+
+            /* Unmerged change from project 'indice.Edi (netstandard1.3)'
+            Before:
+                    }
+
+                    /// <summary>
+            After:
+                    }
+
+                    /// <summary>
+            */
+
+            /* Unmerged change from project 'indice.Edi (netstandard1.0)'
+            Before:
+                    }
+
+                    /// <summary>
+            After:
+                    }
+
+                    /// <summary>
+            */
+
+            /* Unmerged change from project 'indice.Edi (netstandard2.0)'
+            Before:
+                    }
+
+                    /// <summary>
+            After:
+                    }
+
+                    /// <summary>
+            */
+
+            /* Unmerged change from project 'indice.Edi (net5.0)'
+            Before:
+                    }
+
+                    /// <summary>
+            After:
+                    }
+
+                    /// <summary>
+            */
         }
-        
+
         /// <summary>
-         /// Represents immediate container structure. Essentialy this is the parent level. 
-         /// </summary>
+        /// Represents immediate container structure. Essentialy this is the parent level. 
+        /// </summary>
         public EdiStructure Container {
             get { return _Container; }
         }
@@ -130,11 +174,11 @@ namespace indice.Edi.Serialization
         }
 
         public EdiStructure(EdiStructureType structureType, EdiStructure parent, EdiPropertyDescriptor property, object instance)
-            : this(structureType, 
-                   parent, 
-                   property, 
-                   instance, 
-                   (structureType == EdiStructureType.Element && property.PathInfo.PathInternal.Element.HasIndex) ? property.PathInfo.PathInternal.Element.Index : 0, 
+            : this(structureType,
+                   parent,
+                   property,
+                   instance,
+                   (structureType == EdiStructureType.Element && property.PathInfo.PathInternal.Element.HasIndex) ? property.PathInfo.PathInternal.Element.Index : 0,
                    new Queue<EdiEntry>()) {
         }
 
@@ -165,8 +209,52 @@ namespace indice.Edi.Serialization
             GetOrderedProperties(new EdiPathComparer(grammar));
 
         public IEnumerable<EdiPropertyDescriptor> GetOrderedProperties(IComparer<EdiPath> comparer) =>
+
+            /* Unmerged change from project 'indice.Edi (netstandard1.3)'
+            Before:
+                        Descriptor.Properties.OrderBy(p => p.PathInfo?.PathInternal ?? default(EdiPath), comparer);
+
+                    public override string ToString() {
+            After:
+                        Descriptor.Properties.OrderBy(p => p.PathInfo?.PathInternal ?? default(EdiPath), comparer);
+
+                    public override string ToString() {
+            */
+
+            /* Unmerged change from project 'indice.Edi (netstandard1.0)'
+            Before:
+                        Descriptor.Properties.OrderBy(p => p.PathInfo?.PathInternal ?? default(EdiPath), comparer);
+
+                    public override string ToString() {
+            After:
+                        Descriptor.Properties.OrderBy(p => p.PathInfo?.PathInternal ?? default(EdiPath), comparer);
+
+                    public override string ToString() {
+            */
+
+            /* Unmerged change from project 'indice.Edi (netstandard2.0)'
+            Before:
+                        Descriptor.Properties.OrderBy(p => p.PathInfo?.PathInternal ?? default(EdiPath), comparer);
+
+                    public override string ToString() {
+            After:
+                        Descriptor.Properties.OrderBy(p => p.PathInfo?.PathInternal ?? default(EdiPath), comparer);
+
+                    public override string ToString() {
+            */
+
+            /* Unmerged change from project 'indice.Edi (net5.0)'
+            Before:
+                        Descriptor.Properties.OrderBy(p => p.PathInfo?.PathInternal ?? default(EdiPath), comparer);
+
+                    public override string ToString() {
+            After:
+                        Descriptor.Properties.OrderBy(p => p.PathInfo?.PathInternal ?? default(EdiPath), comparer);
+
+                    public override string ToString() {
+            */
             Descriptor.Properties.OrderBy(p => p.PathInfo?.PathInternal ?? default(EdiPath), comparer);
-        
+
         public override string ToString() {
             var text = new System.Text.StringBuilder();
             text.Append($"{StructureType}");
@@ -181,8 +269,10 @@ namespace indice.Edi.Serialization
                     text.Append($" {Descriptor.Attributes.OfType<EdiPathAttribute>().FirstOrDefault()?.PathInternal.ToString("s")}"); // the rest
                     break;
             }
-            if (Index > 0)
+            if (Index > 0) {
                 text.Append($"[{Index + 1}]");
+            }
+
             return text.ToString();
         }
 
@@ -191,8 +281,10 @@ namespace indice.Edi.Serialization
         /// Useful on <seealso cref="EdiStructureType.SegmentGroup"/> where there is a close condition.
         /// </summary>
         public void Close() {
-            if (_isClosed)
+            if (_isClosed) {
                 throw new EdiException("Cannot close an already closed Structure");
+            }
+
             _isClosed = true;
         }
     }

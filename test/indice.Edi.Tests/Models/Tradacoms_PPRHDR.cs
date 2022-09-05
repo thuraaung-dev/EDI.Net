@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using indice.Edi.Serialization;
 
 namespace indice.Edi.Tests.Models
@@ -58,7 +57,7 @@ namespace indice.Edi.Tests.Models
         public List<PPRHDR_PosRows> PosRows { get; set; }
     }
 
-    [EdiSegmentGroup("PLO",  SequenceEnd = "SFC"/*"SFP", "SFS" */)]
+    [EdiSegmentGroup("PLO", SequenceEnd = "SFC"/*"SFP", "SFS" */)]
     public class PPRHDR_PosRows
     {
         [EdiValue("9(10)", Path = "PLO/0")]

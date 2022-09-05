@@ -1,8 +1,4 @@
 ﻿using indice.Edi.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace indice.Edi.Tests

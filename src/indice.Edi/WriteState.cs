@@ -58,7 +58,7 @@ namespace indice.Edi
         /// A Component is being written.
         /// </summary>
         Component = 4,
-        
+
         /// <summary>
         /// A write method has not been called.
         /// </summary>

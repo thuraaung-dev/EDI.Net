@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using indice.Edi.Serialization;
 
 namespace indice.Edi.Tests.Models
@@ -29,14 +27,14 @@ namespace indice.Edi.Tests.Models
     [EdiMessage]
     public class Quote
     {
-     //   public UNG Header { get; set; }
+        //   public UNG Header { get; set; }
         public UNH Header { get; set; }
 
         public BGM2 BGM { get; set; }
 
-     //   public REF REF { get; set; }
+        //   public REF REF { get; set; }
         public NAD_GR1 NAD_GP1 { get; set; }
-        public TDT_GR2 TDT_GR2 { get; set; }        
+        public TDT_GR2 TDT_GR2 { get; set; }
         public NAD_GR4 NAD_GR4 { get; set; }
         public CNT CNT { get; set; }
         public UNT UNT { get; set; }
@@ -45,7 +43,8 @@ namespace indice.Edi.Tests.Models
     #region header segments
 
     [EdiSegment, EdiPath("UNB")]
-    public class UNB {
+    public class UNB
+    {
         [EdiValue("X(4)", Path = "UNB/0", Mandatory = true)]
         public string Identifier { get; set; } = "UNOA"; //Syntax identifier
 
@@ -91,7 +90,8 @@ namespace indice.Edi.Tests.Models
 
 
     [EdiSegment, EdiPath("UNG")]
-    public class UNG {
+    public class UNG
+    {
         [EdiValue("9(6)", Path = "UNG/0/0", Mandatory = true)]
         public string FGI { get; set; } = "CUSRES";
 
@@ -127,7 +127,8 @@ namespace indice.Edi.Tests.Models
 
 
     [EdiSegment, EdiPath("UNH")]
-    public class UNH {
+    public class UNH
+    {
         [EdiValue("X(14)", Path = "UNH/0/0")]
         public string MessageRef { get; set; } = "1";
 
@@ -150,10 +151,11 @@ namespace indice.Edi.Tests.Models
         public string CommonAccessRef { get; set; }
     }
 
-    
-   
+
+
     [EdiSegment, EdiPath("BGM")]
-    public class BGM2 {
+    public class BGM2
+    {
         /// <summary>
         /// 962 Indicates response message
         /// 132 Unsolicited message
@@ -167,7 +169,8 @@ namespace indice.Edi.Tests.Models
     }
 
     [EdiSegment, EdiPath("REF")]
-    public class REF {
+    public class REF
+    {
         [EdiValue("X(3)", Path = "REF/0/0", Mandatory = true)]
         public string ReferenceCodeQualifier { get; set; }
         [EdiValue("X(70)", Path = "REF/0/1")]
@@ -254,10 +257,11 @@ namespace indice.Edi.Tests.Models
 
     #region GR1 | Level 1
     //  [EdiCondition("NAD")]
-     [EdiSegmentGroup("NAD", SequenceEnd = "TDT")]
-     [EdiCondition("MS", CheckFor = EdiConditionCheckType.Equal, Path = "NAD/0/0")]
+    [EdiSegmentGroup("NAD", SequenceEnd = "TDT")]
+    [EdiCondition("MS", CheckFor = EdiConditionCheckType.Equal, Path = "NAD/0/0")]
     //  [EdiSegment, EdiPath("NAD")]
-    public class NAD_GR1 {
+    public class NAD_GR1
+    {
         [EdiValue("X(3)", Path = "NAD/0/0", Mandatory = true)]
         public string PartyFunctionCodeQualifier { get; set; }
         [EdiValue("X(35)", Path = "NAD/1/0", Mandatory = true)]
@@ -277,7 +281,8 @@ namespace indice.Edi.Tests.Models
     #endregion GR1
     #region GR2 | Level 1
     [EdiSegmentGroup("TDT", SequenceEnd = "NAD")]
-    public class TDT_GR2 {
+    public class TDT_GR2
+    {
         [EdiValue("X(3)", Path = "TDT/0/0", Mandatory = true)]
         public string TransportStageCodeQualifier { get; set; }
         [EdiValue("X(17)", Path = "TDT/0/1")]
@@ -300,7 +305,7 @@ namespace indice.Edi.Tests.Models
     }
     #endregion GR3
     #region GR4 | Level 1
-  //  [EdiCondition("NAD", Path = "NAD_GR4/0/0")]
+    //  [EdiCondition("NAD", Path = "NAD_GR4/0/0")]
     [EdiSegmentGroup("NAD", SequenceEnd = "CNT")]
     [EdiCondition("FL", CheckFor = EdiConditionCheckType.Equal, Path = "NAD/0/0")]
     public class NAD_GR4
@@ -341,8 +346,8 @@ namespace indice.Edi.Tests.Models
         public string CodeListresponsibleAgencyCode { get; set; }
         [EdiValue("X(35)", Path = "DOC/1/0", Mandatory = false)]
         public string DocumentIdentifier { get; set; }
-        public DTM2[] DTM3 { get; set; }
-        public LOC2[] LOC3 { get; set; }
+        public DTM2[] DTM { get; set; }
+        public LOC2[] LOC { get; set; }
     }
     #endregion GR5
     #region Footer

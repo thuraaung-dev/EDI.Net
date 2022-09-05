@@ -1,7 +1,7 @@
-﻿using indice.Edi.Serialization;
-using indice.Edi.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using indice.Edi.Serialization;
+using indice.Edi.Utilities;
 
 namespace indice.Edi.Tests.Models.EdiFact01
 {
@@ -16,7 +16,7 @@ namespace indice.Edi.Tests.Models.EdiFact01
         }
 
         public static DTMPeriod Parse(string text) {
-            var textFrom  = text?.Substring(0, 12);
+            var textFrom = text?.Substring(0, 12);
             var textTo = text?.Substring(12, 12);
             return new DTMPeriod(
                     textFrom.ParseEdiDate("yyyyMMddHHmm"),
@@ -27,7 +27,7 @@ namespace indice.Edi.Tests.Models.EdiFact01
         public override string ToString() {
             return $"{From:yyyyMMddHHmm}{To:yyyyMMddHHmm}";
         }
-        
+
         public static implicit operator string(DTMPeriod value) {
             return value.ToString();
         }
@@ -53,7 +53,7 @@ namespace indice.Edi.Tests.Models.EdiFact01
             return DateTime.ToString();
         }
     }
-    
+
     [EdiElement, EdiPath("DTM/0"), EdiCondition("ZZZ", Path = "DTM/0/0")]
     public class UTCOffset
     {

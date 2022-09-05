@@ -1,13 +1,11 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using System.Text;
-using indice.Edi;
 using indice.Edi.Serialization;
 
 namespace indice.Edi.Tests.Models
 {
-    class EdiPaiement_Issue139
+    internal class EdiPaiement_Issue139
     {
         public Segment_UNB UNB { get; set; }
         public List<GroupeFonctionnel> GroupesFonctionnels { get; set; }
