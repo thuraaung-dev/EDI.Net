@@ -15,17 +15,17 @@ namespace indice.Edi.Tests.Models
     [EdiMessage]
     public class Quote
     {
-        public UNH UNH_Header { get; set; }
+        public UNH UNH_Header { get; set; } // Level 0
 
-        public BGM2 BGM { get; set; }
+        public BGM2 BGM { get; set; } // Level 0
 
         //   public REF REF { get; set; }
-        public NAD_GR1 NAD_GP1 { get; set; }
-        public TDT_GR2 TDT_GR2 { get; set; }
-        public NAD_GR4 NAD_GR4 { get; set; }
-        public CNT CNT { get; set; }
-        public UNT UNT { get; set; }
-        public UNE UNE { get; set; }
+        public NAD_GR1 NAD_GP1 { get; set; } // Level 1
+        public TDT_GR2 TDT_GR2 { get; set; } // Level 1
+        public NAD_GR4 NAD_GR4 { get; set; } // Level 1
+        public CNT CNT { get; set; } // Level 0
+        public UNT UNT { get; set; } // Level 0
+        public UNE UNE { get; set; } // Level 0
     }
 
     #region header segments
@@ -191,7 +191,7 @@ namespace indice.Edi.Tests.Models
         public int ScenarioControllingAgencyCoded { get; set; }
     }
 
-
+    #endregion Header
     /// <summary>
     /// BGM - Beginning of Message
     /// </summary>
@@ -357,6 +357,87 @@ namespace indice.Edi.Tests.Models
         public string MeasurementUnitCode { get; set; }
     }
     /// <summary>
+    /// MEA - Measurement
+    /// </summary>
+    [EdiSegment, EdiPath("MEA")]
+    public class MEA2 // Level 2 | NAD | GP4
+    {
+        [EdiValue("X(3)", Path = "MEA/0/0", Mandatory = true)]
+        public string MeasurementPurposeCodeQualifier { get; set; }
+
+        [EdiValue("X(3)", Path = "MEA/1/0", Mandatory = true)]
+        public string MeasurementAttributeCode { get; set; }
+        [EdiValue("X(3)", Path = "MEA/1/1", Mandatory = false)]
+        public string MeasurementSignificanceCode { get; set; }
+        [EdiValue("X(17)", Path = "MEA/1/2", Mandatory = false)]
+        public string NonDiscretetmeasurementNameCode {get; set; }
+        [EdiValue("X(70)", Path = "MEA/1/3", Mandatory = false)]
+        public string NonDiscretetmeasurementName { get; set; }
+        [EdiValue("X(8)", Path = "MEA/2/0", Mandatory = false)]
+        public string MeasurementUnitCode { get; set; }
+        [EdiValue("X(3)", Path = "MEA/2/1")]
+        public string Measure { get; set; }
+        [EdiValue("X(18)", Path = "MEA/2/2")]
+        public string RangeMinimumQuantity1 { get; set; }
+        [EdiValue("X(18)", Path = "MEA/2/2")]
+        public string RangeMinimumQuantity2 { get; set; }
+        [EdiValue("X(2)", Path = "MEA/2/3")]
+        public string SignificantDigitsQuantity { get; set; }
+        [EdiValue("X(3)", Path = "MEA/3")]
+        public string SurfaceOrLayerCode { get; set; }
+    }
+    /// <summary>
+    /// GEI - Processing Information
+    /// </summary>
+    [EdiSegment, EdiPath("GEI")]
+    public class GEI // Level 2 | NAD | GP4
+    {
+        [EdiValue("X(3)", Path = "GEI/0/0", Mandatory = true)]
+        public string ProcessingInformationCodeQualifier { get; set; }
+        [EdiValue("X(3)", Path = "GEI/1/0", Mandatory = true)]
+        public string ProcessingIndicatorDescriptionCode { get; set; }
+        [EdiValue("X(17)", Path = "GEI/1/1")]
+        public string CodeListIdentificationCode { get; set; }
+        [EdiValue("X(3)", Path = "GEI/1/2")]
+        public string CodeListResponsibleAgencyCode { get; set; }
+        [EdiValue("X(35)", Path = "GEI/1/3")]
+        public string ProcessingIndicatorDescription { get; set; }
+        [EdiValue("X(17)", Path = "GEI/2")]
+        public string ProcessTypeDescriptioinCode { get; set; }
+    }
+    /// <summary>
+    /// FTX - Free Text
+    /// </summary>
+    [EdiSegment, EdiPath("FTX")]
+    public class FTX2 // Level 2 | NAD | GP4
+    {
+        [EdiValue("X(3)", Path = "FTX/0/0", Mandatory = true)]
+        public string TextSubjectCodeQualifier { get; set; }
+        [EdiValue("X(15)", Path = "FTX/1/0")]
+        public string FreeTextFunctionCode { get; set; }
+        [EdiValue("X(17)", Path = "FTX/2/0")]
+        public string FreeTextDescriptionCode { get; set; }
+        [EdiValue("X(17)", Path = "FTX/2/1")]
+        public string CodeListIdentificationCode { get; set; }
+        [EdiValue("X(3)", Path = "FTX/2/2")]
+        public string CodeListResponsibleAgencyCode { get; set; }
+        [EdiValue("X(512)", Path = "FTX/2/0")]
+        public string FreeText1 { get; set; }
+        [EdiValue("X(512)", Path = "FTX/2/1")]
+        public string FreeText2 { get; set; }
+        [EdiValue("X(512)", Path = "FTX/2/2")]
+        public string FreeText3 { get; set; }
+        [EdiValue("X(512)", Path = "FTX/2/3")]
+        public string FreeText4 { get; set; }
+        [EdiValue("X(512)", Path = "FTX/2/4")]
+        public string FreeText5 { get; set; }
+        [EdiValue("X(3)", Path = "FTX/3")]
+        public string LanguageNameCode { get; set; }
+        [EdiValue("X(3)", Path = "FTX/4")]
+        public string FreeTextFormatCode { get; set; }
+
+    }
+    /// <summary>
     /// UNT - Message Trailer
     /// </summary>
     [EdiSegment, EdiPath("UNT")]
@@ -380,17 +461,15 @@ namespace indice.Edi.Tests.Models
         [EdiValue("X(14)", Path = "UNE/0/1", Mandatory = true)]
         public string ApplicationSenderIdentification { get; set; }
     }
-    #endregion Header
+
 
 
     #region GR1 | Level 1
-    //  [EdiCondition("NAD")]
     /// <summary>
     /// NAD - Name and Address
     /// </summary>
     [EdiSegmentGroup("NAD", SequenceEnd = "TDT")]
     [EdiCondition("MS", CheckFor = EdiConditionCheckType.Equal, Path = "NAD/0/0")]
-    //  [EdiSegment, EdiPath("NAD")]
     public class NAD_GR1
     {
         [EdiValue("X(3)", Path = "NAD/0/0", Mandatory = true)]
@@ -445,7 +524,6 @@ namespace indice.Edi.Tests.Models
         public string PostalIdentificationCode { get; set; }
         [EdiValue("X(3)", Path = "NAD/8/0", Mandatory = false)]
         public string CountryNameCode { get; set; }
-
         public COM[] COM { get; set; }
     }
     #endregion GR1
@@ -582,6 +660,9 @@ namespace indice.Edi.Tests.Models
         public string CountryNameCode { get; set; }
         public ATT[] ATT { get; set; }
         public DTM2[] DTM { get; set; }
+        public MEA2[] MEA { get; set; }
+        public GEI[] GEI { get; set; }
+        public FTX2[] FTX { get; set; }
         public LOC2[] LOC { get; set; }
         public NAT[] NAT { get; set; }
         public REF[] REF { get; set; }
