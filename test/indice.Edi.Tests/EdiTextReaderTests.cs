@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using indice.Edi.Tests.Models;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace indice.Edi.Tests
@@ -256,7 +257,7 @@ namespace indice.Edi.Tests
             using (var stream = Helpers.GetResourceStream("individual_PAXLST.edi")) {
                 interchange = new EdiSerializer().Deserialize<PaxLst>(new StreamReader(stream), grammar);
             }
-
+            File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "paxlstinfo.json", JsonConvert.SerializeObject(interchange));
             var unbSegment = interchange.UNB_Header;
 
             //Test Interchange de-serialization

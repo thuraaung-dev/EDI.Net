@@ -32,9 +32,8 @@ namespace indice.Edi.Tests.Models
     /// <summary>
     /// Interchange Header
     /// </summary>
-    [EdiSegment, EdiPath("UNB")] 
-    public class UNB
-    {
+    [EdiSegment, EdiPath("UNB")]
+    public class UNB {
         [EdiValue("X(4)", Path = "UNB/0", Mandatory = true)]
         public string SyntaxIdentifier { get; set; } = "UNOA"; //Syntax identifier
 
@@ -45,28 +44,23 @@ namespace indice.Edi.Tests.Models
         /// Sender identification
         /// </summary>
         [EdiValue("X(35)", Path = "UNB/1/0", Mandatory = true)]
-        public string InterchangeSenderIdentification { get; set; } = "UKSB";
+        public string SenderIdentification { get; set; } = "UKSB";
 
         [EdiValue("X(4)", Path = "UNB/1/1", Mandatory = false)]
-        public string SenderIdentificationCodeQualifier { get; set; }
+        public string SenderPartnerIdentificationCodeQualifier { get; set; }
 
-        [EdiValue("X(35)", Path = "UNB/1/2", Mandatory = false)]
-        public string SenderInterchangeSenderInternalIdentification { get; set; }
-        [EdiValue("X(35)", Path = "UNB/1/3", Mandatory = false)]
-        public string InterchangeSenderInternalSubIdentification { get; set; }
+        [EdiValue("X(14)", Path = "UNB/1/2", Mandatory = false)]
+        public string AddressForReverseRouting { get; set; }
 
         [EdiValue("X(35)", Path = "UNB/2/0", Mandatory = true)]
-        public string InterchangeRecipientIdentification { get; set; } = "DLH";
+        public string RecipientIdentification { get; set; } = "DLH";
 
 
         [EdiValue("X(4)", Path = "UNB/2/1", Mandatory = false)]
-        public string RecipientIdentificationCodeQualifier { get; set; }
+        public string RecipientPartnerIdentificationCodeQualifier { get; set; }
 
-        [EdiValue("X(35)", Path = "UNB/2/2", Mandatory = false)]
-        public string InterchangeRecipientInternalIdentification { get; set; }
-        [EdiValue("X(35)", Path = "UNB/2/3", Mandatory = false)]
-        public string InterchangeRecipientnternalSubIdentification { get; set; }
-
+        [EdiValue("X(14)", Path = "UNB/2/2", Mandatory = false)]
+        public string RoutingAddress { get; set; }
 
 
         [EdiValue("9(8)", Path = "UNB/3/0", Format = "ddMMyy", Description = "Date of Preparation")]
@@ -76,13 +70,21 @@ namespace indice.Edi.Tests.Models
 
         [EdiValue("X(14)", Path = "UNB/4", Mandatory = true)]
         public string InterchangeControlReference { get; set; } = "D8L3H9";
+        [EdiValue("X(14)", Path = "UNB/5/0")]
+        public string RecipientReferencePassword { get; set; }
+        [EdiValue("X(2)", Path = "UNB/5/1")]
+        public string RecipientReferencePasswordQualifier { get; set; }
         [EdiValue("X(14)", Path = "UNB/6", Mandatory = false)]
         public string ApplicationReference { get; set; }
         [EdiValue("X(1)", Path = "UNB/7", Mandatory = false)]
         public string ProcessingPriorityCode { get; set; }
 
-        [EdiValue("9(1)", Path = "UNB/8", Mandatory = false)]
+        [EdiValue("9(1)", Path = "UNB/8/0", Mandatory = false)]
         public int AcknowledgementRequest { get; set; }
+        [EdiValue("X(32)", Path = "UNB/8/1", Mandatory = false)]
+        public string CommunicationsAgreementID { get; set; }
+        [EdiValue("X(35)", Path = "UNB/8/1", Mandatory = false)]
+        public string TestIndicator { get; set; }
     }
 
     /// <summary>
@@ -100,10 +102,12 @@ namespace indice.Edi.Tests.Models
         [EdiValue("X(35)", Path = "UNG/1/0", Mandatory = true)]
         public string ApplicationSenderIdentification { get; set; } = "UKSB";
         [EdiValue("X(4)", Path = "UNG/1/1", Mandatory = false)]
-        public string PartnerIdentificationCodeQualifier { get; set; } = "UKSB";
+        public string SenderPartnerIdentificationCodeQualifier { get; set; } 
 
         [EdiValue("X(35)", Path = "UNG/2/0", Mandatory = true)]
         public string ApplicationRecipientIdentififcation { get; set; } = "DLH";
+        [EdiValue("X(4)", Path = "UNG/2/1", Mandatory = false)]
+        public string RecipientPartnerIdentificationCodeQualifier { get; set; }
         [EdiValue("9(6)", Path = "UNG/3/0", Format = "ddMMyy", Description = "Date of Preparation")]
         [EdiValue("9(4)", Path = "UNG/3/1", Format = "HHmm", Description = "Time or Prep")]
         public DateTime DateTimeOfPreparation { get; set; } = DateTime.ParseExact("110103:0621", "yyMMdd:HHmm",
@@ -120,6 +124,11 @@ namespace indice.Edi.Tests.Models
 
         [EdiValue("X(3)", Path = "UNG/6/1, Mandatory = true")]
         public string MessageTypeReleaseNumber { get; set; } = "05B";
+        [EdiValue("X(6)", Path = "UNG/7/0", Mandatory = false)]
+        public string AssociationAssignedCode { get; set; }
+        [EdiValue("X(14)", Path = "UNG/8/0", Mandatory = false)]
+        public string ApplicationPassword { get; set; }
+
     }
 
     /// <summary>
@@ -145,7 +154,11 @@ namespace indice.Edi.Tests.Models
 
         [EdiValue("X(6)", Path = "UNH/1/4")]
         public string AssociationAssignedCode { get; set; } = "IATA";
-
+        [EdiValue("X(6)", Path = "UNH/1/5")]
+        public string CodeListDirectoryVersionNumber { get; set; }
+        [EdiValue("X(6)", Path = "UNH/1/6")]
+        public string MessageTypeSubFunctionIdentification { get; set; }
+        
         [EdiValue("X(35)", Path = "UNH/2/0")]
         public string CommonAccessRefence { get; set; }
         [EdiValue("9(2)", Path = "UNH/3/0", Mandatory = true)]
@@ -158,18 +171,24 @@ namespace indice.Edi.Tests.Models
         public int MessageSubsetVersionNumber { get; set; }
         [EdiValue("X(3)", Path = "UNH/4/2", Mandatory = false)]
         public int MessageSubsetReleaseNumber { get; set; }
+        [EdiValue("X(3)", Path = "UNH/4/3", Mandatory = false)]
+        public string MessageSubsetControllingAgencyCoded { get; set; }
         [EdiValue("X(14)", Path = "UNH/5/0", Mandatory = true)]
         public int MessageImplementationGuidelineIdentification { get; set; }
         [EdiValue("X(3)", Path = "UNH/5/1", Mandatory = false)]
         public int MessageImplementationGuidelineVersionNumber { get; set; }
         [EdiValue("X(3)", Path = "UNH/5/2", Mandatory = false)]
         public int MessageImplementationGuidelineReleaseNumber { get; set; }
+        [EdiValue("X(3)", Path = "UNH/5/3", Mandatory = false)]
+        public int MessageImplementationControllingAgencyCoded { get; set; }
         [EdiValue("X(14)", Path = "UNH/6/0", Mandatory = true)]
         public int ScenarioIdentification { get; set; }
         [EdiValue("X(3)", Path = "UNH/6/1", Mandatory = false)]
         public int ScenarioVersionNumber { get; set; }
         [EdiValue("X(3)", Path = "UNH/6/2", Mandatory = false)]
         public int ScenarioReleaseNumber { get; set; }
+        [EdiValue("X(3)", Path = "UNH/6/3", Mandatory = false)]
+        public int ScenarioControllingAgencyCoded { get; set; }
     }
 
 
@@ -186,9 +205,20 @@ namespace indice.Edi.Tests.Models
         /// </summary>
         [EdiValue("X(3)", Path = "BGM/0/0")]
         public string DocumentNameCode { get; set; }
+        [EdiValue("X(17)", Path = "BGM/0/1")]
+        public string CodeListIdentificationCode { get; set; }
+        [EdiValue("X(3)", Path = "BGM/0/1")]
+        public string CodeListResponsibleAgencyCode { get; set; }
+        [EdiValue("X(35)", Path = "BGM/0/1")]
+        public string DocumentName { get; set; }
 
         [EdiValue("X(35)", Path = "BGM/1/0")]
         public string DocumentIdentifier { get; set; }
+        [EdiValue("X(35)", Path = "BGM/1/1")]
+        public string VersionIdentifier { get; set; }
+        [EdiValue("X(9)", Path = "BGM/1/2")]
+        public string RevisionIdentifier { get; set; }
+
         [EdiValue("X(3)", Path = "BGM/2/0")]
         public string MessageFunctionCode { get; set; }
         [EdiValue("X(3)", Path = "BGM/3/0")]
@@ -244,16 +274,16 @@ namespace indice.Edi.Tests.Models
     {
         [EdiValue("X(3)", Path = "ATT/0/0", Mandatory = true)]
         public string AttributeFunctionCodeQualifier { get; set; }
-        [EdiValue("X(3)", Path = "ATT/1/0", Mandatory = true)]
+        [EdiValue("X(17)", Path = "ATT/1/0", Mandatory = false)]
         public string AttributeTypeDescription { get; set; }
 
         [EdiValue("X(17)", Path = "DTM/2/0", Mandatory = true)]
         public string AttributeDescriptionCode { get; set; }
-        [EdiValue("X(17)", Path = "DTM/2/1", Mandatory = true)]
+        [EdiValue("X(17)", Path = "DTM/2/1", Mandatory = false)]
         public string CodeListIdentificationCode { get; set; }
-        [EdiValue("X(3)", Path = "DTM/2/2", Mandatory = true)]
+        [EdiValue("X(3)", Path = "DTM/2/2", Mandatory = false)]
         public string CodeListResponsibleAgencyCode { get; set; }
-        [EdiValue("X(256)", Path = "DTM/2/3", Mandatory = true)]
+        [EdiValue("X(256)", Path = "DTM/2/3", Mandatory = false)]
         public string AttributeDescription { get; set; }
     }
     /// <summary>
@@ -262,6 +292,8 @@ namespace indice.Edi.Tests.Models
     [EdiSegment, EdiPath("LOC"), EdiSegmentGroup("NAD", "DOC")]
     public class LOC2 // Level 2 | NAD | GP4
     {
+        [EdiValue("X(3)", Path = "LOC/0", Mandatory = true)]
+        public string LocationCodeQualifier { get; set; }
         [EdiValue("X(35)", Path = "LOC/1/0", Mandatory = false)]
         public string LocationNameCode { get; set; }
         [EdiValue("X(17)", Path = "LOC/1/1", Mandatory = false)]
@@ -270,6 +302,24 @@ namespace indice.Edi.Tests.Models
         public string CodeListResponsibleAgencyCode { get; set; }
         [EdiValue("X(256)", Path = "LOC/1/3", Mandatory = false)]
         public string LocationName { get; set; }
+        [EdiValue("X(25)", Path = "LOC/2/0", Mandatory = false)]
+        public string FirstRelatedLocationNameCode { get; set; }
+        [EdiValue("X(17)", Path = "LOC/2/1", Mandatory = false)]
+        public string FirstRelatedIdentificationCode { get; set; }
+        [EdiValue("X(3)", Path = "LOC/2/2", Mandatory = false)]
+        public string FirstRelatedResponsibleAgencyCode { get; set; }
+        [EdiValue("X(70)", Path = "LOC/2/3", Mandatory = false)]
+        public string FirstRelatedLocationName { get; set; }
+        [EdiValue("X(25)", Path = "LOC/3/0", Mandatory = false)]
+        public string SecondRelatedLocationNameCode { get; set; }
+        [EdiValue("X(17)", Path = "LOC/3/1", Mandatory = false)]
+        public string SecondRelatedIdentificationCode { get; set; }
+        [EdiValue("X(3)", Path = "LOC/3/2", Mandatory = false)]
+        public string SecondRelatedResponsibleAgencyCode { get; set; }
+        [EdiValue("X(70)", Path = "LOC/3/3", Mandatory = false)]
+        public string SecondRelatedLocationName { get; set; }
+        [EdiValue("X(3)", Path = "LOC/4", Mandatory = false)]
+        public string RelationCode { get; set; }
     }
     /// <summary>
     ///  NAT - Nationality
@@ -282,6 +332,13 @@ namespace indice.Edi.Tests.Models
 
         [EdiValue("X(3)", Path = "NAT/1/0", Mandatory = false)]
         public string NationalityNameCode { get; set; }
+        [EdiValue("X(17)", Path = "NAT/1/1", Mandatory = false)]
+        public string CodeListIdentificationCode { get; set; }
+        [EdiValue("X(3)", Path = "NAT/1/2", Mandatory = false)]
+        public string CodeListResponsibleAgencyCode { get; set; }
+        [EdiValue("X(35)", Path = "NAT/1/3", Mandatory = false)]
+        public string NationalityName { get; set; }
+
     }
     /// <summary>
     /// CNT - Control Total
@@ -358,8 +415,14 @@ namespace indice.Edi.Tests.Models
         public string PartyName1 { get; set; }
         [EdiValue("X(35)", Path = "NAD/3/1", Mandatory = true)]
         public string PartyName2 { get; set; }
-        [EdiValue("X(35)", Path = "NAD/3/2", Mandatory = true)]
+        [EdiValue("X(35)", Path = "NAD/3/2", Mandatory = false)]
         public string PartyName3 { get; set; }
+        [EdiValue("X(35)", Path = "NAD/3/3", Mandatory = false)]
+        public string PartyName4 { get; set; }
+        [EdiValue("X(35)", Path = "NAD/3/4", Mandatory = false)]
+        public string PartyName5 { get; set; }
+        [EdiValue("X(3)", Path = "NAD/3/5", Mandatory = false)]
+        public string PartyNameFormatCode { get; set; }
         [EdiValue("X(35)", Path = "NAD/4/0", Mandatory = false)]
         public string StreetAndNumberOrPostOfficeBoxIdentifier1 { get; set; }
         [EdiValue("X(35)", Path = "NAD/4/1", Mandatory = false)]
@@ -372,6 +435,12 @@ namespace indice.Edi.Tests.Models
         public string CityName { get; set; }
         [EdiValue("X(9)", Path = "NAD/6/0", Mandatory = false)]
         public string CountrySubEntryNameCode { get; set; }
+        [EdiValue("X(17)", Path = "NAD/6/1", Mandatory = false)]
+        public string CountrySubCodeListIdentificationCode { get; set; }
+        [EdiValue("X(3)", Path = "NAD/6/2", Mandatory = false)]
+        public string CountrySubResponsibleAgencyCode { get; set; }
+        [EdiValue("X(70)", Path = "NAD/6/3", Mandatory = false)]
+        public string CountrySubEntryName { get; set; }
         [EdiValue("X(17)", Path = "NAD/7/0", Mandatory = false)]
         public string PostalIdentificationCode { get; set; }
         [EdiValue("X(3)", Path = "NAD/8/0", Mandatory = false)]
@@ -405,6 +474,8 @@ namespace indice.Edi.Tests.Models
         public string CarrierListIdentificatonCode { get; set; }
         [EdiValue("X(17)", Path = "TDT/4/2")]
         public string CarrierListResponsibleAgencyCode { get; set; }
+        [EdiValue("X(35)", Path = "TDT/4/3")]
+        public string CarrierName { get; set; }
         [EdiValue("X(3)", Path = "TDT/5/0")]
         public string TransitDirectionIndicatorCode { get; set; }
         [EdiValue("X(3)", Path = "TDT/6/0", Mandatory = true)]
@@ -448,19 +519,21 @@ namespace indice.Edi.Tests.Models
         [EdiValue("X(25)", Path = "LOC/2/0", Mandatory = false)]
         public string FirstRelatedLocationNameCode { get; set; }
         [EdiValue("X(17)", Path = "LOC/2/1", Mandatory = false)]
-        public string FirstRelatedCodeListIdentificationCode { get; set; }
+        public string FirstRelatedIdentificationCode { get; set; }
         [EdiValue("X(3)", Path = "LOC/2/2", Mandatory = false)]
-        public string FirstRelatedCodeListResponsibleAgencyCode { get; set; }
+        public string FirstRelatedResponsibleAgencyCode { get; set; }
         [EdiValue("X(70)", Path = "LOC/2/3", Mandatory = false)]
         public string FirstRelatedLocationName { get; set; }
         [EdiValue("X(25)", Path = "LOC/3/0", Mandatory = false)]
         public string SecondRelatedLocationNameCode { get; set; }
         [EdiValue("X(17)", Path = "LOC/3/1", Mandatory = false)]
-        public string SecondRelatedCodeListIdentificationCode { get; set; }
+        public string SecondRelatedIdentificationCode { get; set; }
         [EdiValue("X(3)", Path = "LOC/3/2", Mandatory = false)]
-        public string SecondRelatedCodeListResponsibleAgencyCode { get; set; }
+        public string SecondRelatedCResponsibleAgencyCode { get; set; }
         [EdiValue("X(70)", Path = "LOC/3/3", Mandatory = false)]
         public string SecondRelatedLocationName { get; set; }
+        [EdiValue("X(3)", Path = "LOC/4", Mandatory = false)]
+        public string RelationCode { get; set; }
         public DTM2 DTM { get; set; }
     }
     #endregion GR3
@@ -528,8 +601,26 @@ namespace indice.Edi.Tests.Models
         public string CodeListIdentificationCode { get; set; }
         [EdiValue("X(3)", Path = "DOC/0/2", Mandatory = false)]
         public string CodeListresponsibleAgencyCode { get; set; }
+        [EdiValue("X(35)", Path = "DOC/0/3", Mandatory = false)]
+        public string DocumentName { get; set; }
         [EdiValue("X(35)", Path = "DOC/1/0", Mandatory = false)]
         public string DocumentIdentifier { get; set; }
+        [EdiValue("X(3)", Path = "DOC/1/1", Mandatory = false)]
+        public string DocumentStatusCode { get; set; }
+        [EdiValue("X(70)", Path = "DOC/1/2", Mandatory = false)]
+        public string DocumentSourceDescription { get; set; }
+        [EdiValue("X(3)", Path = "DOC/1/3", Mandatory = false)]
+        public string LanguageNameCode { get; set; }
+        [EdiValue("X(9)", Path = "DOC/1/4", Mandatory = false)]
+        public string VersionIdentifier { get; set; }
+        [EdiValue("X(6)", Path = "DOC/1/5", Mandatory = false)]
+        public string RevisionIdentifier { get; set; }
+        [EdiValue("X(3)", Path = "DOC/2", Mandatory = false)]
+        public string CommunicationMediumTypeCode { get; set; }
+        [EdiValue("9(2)", Path = "DOC/3", Mandatory = false)]
+        public int DocumentCopiesRequiredQuantity { get; set; }
+        [EdiValue("9(2)", Path = "DOC/4", Mandatory = false)]
+        public int DocumentOriginalsRequiredQuantity { get; set; }
         public DTM2[] DTM { get; set; }
         public LOC2[] LOC { get; set; }
     }
