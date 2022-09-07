@@ -6,10 +6,10 @@ namespace indice.Edi.Tests.Models
    
     public class PaxLst
     {
-        public UNB UNB_Header { get; set; }
-        public UNG UNG_Header { get; set; }
-        public Quote Message { get; set; }
-        public UNZ UNZ_Footer { get; set; }        
+        public UNB UNB_Header { get; set; } // Level 0
+        public UNG UNG_Header { get; set; } // Level 0
+        public Quote Message { get; set; } // Level 0
+        public UNZ UNZ_Footer { get; set; } // Level 0    
     }
 
     [EdiMessage]
@@ -22,7 +22,7 @@ namespace indice.Edi.Tests.Models
         //   public REF REF { get; set; }
         public NAD_GR1 NAD_GP1 { get; set; } // Level 1
         public TDT_GR2 TDT_GR2 { get; set; } // Level 1
-        public NAD_GR4 NAD_GR4 { get; set; } // Level 1
+        public NAD_GR4[] NAD_GR4 { get; set; } // Level 1
         public CNT CNT { get; set; } // Level 0
         public UNT UNT { get; set; } // Level 0
         public UNE UNE { get; set; } // Level 0
