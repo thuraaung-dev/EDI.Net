@@ -254,7 +254,7 @@ namespace indice.Edi.Tests
         public void EdiFact_Paxlist_Segmenents_Only_Standard_Test() {
             var grammar = EdiGrammar.NewEdiFact();
             var interchange = default(PaxLst);
-            using (var stream = Helpers.GetResourceStream("1A1D.edi")) {
+            using (var stream = Helpers.GetResourceStream("individual_PAXLST.edi")) {
                 interchange = new EdiSerializer().Deserialize<PaxLst>(new StreamReader(stream), grammar);
             }
             File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "paxlstinfo.json", JsonConvert.SerializeObject(interchange));

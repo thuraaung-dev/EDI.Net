@@ -66,6 +66,78 @@ namespace indice.Edi.Tests
             Assert.Equal(expected.ToString(), output.ToString());
         }
 
+        [Fact, Trait(Traits.Tag, "Writer")]
+        public void WriterWritesPaxLstStructureTest() {
+            var grammar = EdiGrammar.NewEdiFact();
+            /*var expected = new StringBuilder().AppendLine("UNA:+.? '")
+                                              .AppendLine("UNB+UNOC:3+1234567891123:14+7080005059275:14:SPOTMARKED+101012:1104+HBQ001++++1'")
+                                              .AppendLine("UNH+1+QUOTES:D:96A:UN:EDIEL2+S'");*/
+            var output = new StringBuilder();
+            using (var writer = new EdiTextWriter(new StringWriter(output), grammar)) {
+                writer.WriteServiceStringAdvice();
+                writer.WriteToken(EdiToken.SegmentName, "UNB"); 
+                writer.WriteToken(EdiToken.String, "UNOA"); 
+                writer.WriteToken(EdiToken.ComponentStart); 
+                writer.WriteToken(EdiToken.Integer, 4); 
+                writer.WriteToken(EdiToken.ElementStart);       
+                writer.WriteValue("1A"); 
+                writer.WriteValue("WE");
+                writer.WriteToken(EdiToken.ElementStart);
+                writer.WriteValue("MAPPS");
+                writer.WriteToken(EdiToken.ElementStart);
+                writer.WriteValue(new DateTime(2022, 06, 30, 07, 35, 0), "ddMMyy");
+                writer.WriteValue(new DateTime(2022, 06, 30, 07, 35, 0), "HHmm"); 
+                writer.WriteToken(EdiToken.ElementStart); 
+                writer.WriteValue("1A24987131"); 
+                writer.WriteToken(EdiToken.ElementStart); 
+                writer.WriteValue((string)null); 
+                writer.WriteToken(EdiToken.ElementStart); 
+                /*writer.WriteValue((string)null);
+                writer.WriteToken(EdiToken.ElementStart);*/
+                writer.WriteValue("APIS");
+                writer.WriteToken(EdiToken.SegmentName, "UNG");
+                writer.WriteValue("PAXLST");
+                writer.WriteToken(EdiToken.ElementStart);
+                writer.WriteValue("THAI SMILE AIRWAYS");
+                writer.WriteValue("WE");
+                writer.WriteToken(EdiToken.ElementStart);
+                writer.WriteValue("MAPPS");
+                writer.WriteToken(EdiToken.ElementStart);
+                writer.WriteValue(new DateTime(2022, 06, 30, 07, 35, 0), "ddMMyy");
+                writer.WriteValue(new DateTime(2022, 06, 30, 07, 35, 0), "HHmm");
+                writer.WriteToken(EdiToken.ElementStart);
+                writer.WriteValue("1A24987132");
+                writer.WriteToken(EdiToken.ElementStart);
+                writer.WriteValue("UN");
+                writer.WriteToken(EdiToken.ElementStart);
+                writer.WriteValue("D");
+                writer.WriteValue("05B");
+
+                writer.WriteToken(EdiToken.SegmentName, "UNH"); 
+                writer.WriteValue(1);
+                writer.WriteToken(EdiToken.ElementStart); 
+                writer.WriteValue("QUOTES"); 
+                writer.WriteValue('D'); 
+                writer.WriteValue("96A"); 
+                writer.WriteValue("UN");
+                writer.WriteValue("EDIEL2"); 
+                writer.WriteToken(EdiToken.ElementStart);
+                writer.WriteValue("S");
+
+                writer.WriteToken(EdiToken.SegmentName, "BGM");
+                writer.WriteValue("745");
+                writer.WriteToken(EdiToken.ElementStart);
+                writer.WriteValue("CP");
+
+                writer.WriteToken(EdiToken.SegmentName, "BGM");
+                writer.WriteValue("745");
+
+                File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "paxlst_out.edi", output.ToString());
+            }
+           // Assert.Equal(expected.ToString(), output.ToString());
+        }
+
+
 
         [Fact, Trait(Traits.Tag, "Writer"), Trait(Traits.Issue, "#109")]
         public void WriterProgressessThePathCorrectly_On_NullToken() {

@@ -16,10 +16,8 @@ namespace indice.Edi.Tests.Models
     public class Quote
     {
         public UNH UNH_Header { get; set; } // Level 0
-
         public BGM2 BGM { get; set; } // Level 0
-
-        //   public REF REF { get; set; }
+        public REF REF { get; set; } // Level 0
         public NAD_GR1 NAD_GP1 { get; set; } // Level 1
         public TDT_GR2 TDT_GR2 { get; set; } // Level 1
         public NAD_GR4[] NAD_GR4 { get; set; } // Level 1
@@ -112,17 +110,17 @@ namespace indice.Edi.Tests.Models
         [EdiValue("9(4)", Path = "UNG/3/1", Format = "HHmm", Description = "Time or Prep")]
         public DateTime DateTimeOfPreparation { get; set; } = DateTime.ParseExact("110103:0621", "yyMMdd:HHmm",
                                  System.Globalization.CultureInfo.InvariantCulture);
-        [EdiValue("X(14)", Path = "UNG/4", Mandatory = true)]
+        [EdiValue("X(14)", Path = "UNG/4/0", Mandatory = true)]
         public string FunctionGroupReferenceNumber { get; set; } = "D8L3H9";
 
-        [EdiValue("X(2)", Path = "UNG/5", Mandatory = true)]
+        [EdiValue("X(2)", Path = "UNG/5/0", Mandatory = true)]
         public string ControllingAgency { get; set; } = "UN";
 
 
         [EdiValue("X(3)", Path = "UNG/6/0", Mandatory = true)]
         public string MessageTypeVersionNumber { get; set; } = "D";
 
-        [EdiValue("X(3)", Path = "UNG/6/1, Mandatory = true")]
+        [EdiValue("X(3)", Path = "UNG/6/1", Mandatory = true)]
         public string MessageTypeReleaseNumber { get; set; } = "05B";
         [EdiValue("X(6)", Path = "UNG/7/0", Mandatory = false)]
         public string AssociationAssignedCode { get; set; }
@@ -227,17 +225,17 @@ namespace indice.Edi.Tests.Models
     /// <summary>
     /// REF - Reference
     /// </summary>
-    [EdiSegment, EdiPath("REF")]
+    [EdiSegment, EdiPath("REF"), EdiSegmentGroup("NAD")]
     public class REF
     {
         [EdiValue("X(3)", Path = "REF/0/0", Mandatory = true)]
         public string ReferenceCodeQualifier { get; set; }
-        [EdiValue("X(70)", Path = "REF/0/1")]
+        [EdiValue("X(70)", Path = "REF/0/1", Mandatory = true)]
         public string ReferenceIdentifier { get; set; }
         [EdiValue("X(6)", Path = "REF/0/2")]
         public string DocumentLineIdentifier { get; set; }
-        [EdiValue("X(9)", Path = "REF/0/3")]
-        public string VersionIdentifier { get; set; }
+        [EdiValue("X(35)", Path = "REF/0/3")]
+        public string ReferenceVersionIdentifier { get; set; }
         [EdiValue("X(6)", Path = "REF/0/4")]
         public string RevisionIdentifier { get; set; }
     }
@@ -292,7 +290,7 @@ namespace indice.Edi.Tests.Models
     [EdiSegment, EdiPath("LOC"), EdiSegmentGroup("NAD", "DOC")]
     public class LOC2 // Level 2 | NAD | GP4
     {
-        [EdiValue("X(3)", Path = "LOC/0", Mandatory = true)]
+        [EdiValue("X(3)", Path = "LOC/0/0", Mandatory = true)]
         public string LocationCodeQualifier { get; set; }
         [EdiValue("X(35)", Path = "LOC/1/0", Mandatory = false)]
         public string LocationNameCode { get; set; }
@@ -383,7 +381,7 @@ namespace indice.Edi.Tests.Models
         public string RangeMinimumQuantity2 { get; set; }
         [EdiValue("X(2)", Path = "MEA/2/3")]
         public string SignificantDigitsQuantity { get; set; }
-        [EdiValue("X(3)", Path = "MEA/3")]
+        [EdiValue("X(3)", Path = "MEA/3/0")]
         public string SurfaceOrLayerCode { get; set; }
     }
     /// <summary>
@@ -431,9 +429,9 @@ namespace indice.Edi.Tests.Models
         public string FreeText4 { get; set; }
         [EdiValue("X(512)", Path = "FTX/2/4")]
         public string FreeText5 { get; set; }
-        [EdiValue("X(3)", Path = "FTX/3")]
+        [EdiValue("X(3)", Path = "FTX/3/0")]
         public string LanguageNameCode { get; set; }
-        [EdiValue("X(3)", Path = "FTX/4")]
+        [EdiValue("X(3)", Path = "FTX/4/0")]
         public string FreeTextFormatCode { get; set; }
 
     }
@@ -621,7 +619,7 @@ namespace indice.Edi.Tests.Models
     #region GR4 | Level 1
     //  [EdiCondition("NAD", Path = "NAD_GR4/0/0")]
     [EdiSegmentGroup("NAD", SequenceEnd = "CNT")]
-    [EdiCondition("FL", CheckFor = EdiConditionCheckType.Equal, Path = "NAD/0/0")]
+    [EdiCondition("MS", CheckFor = EdiConditionCheckType.NotEqual, Path = "NAD/0/0")]
     public class NAD_GR4
     {
         [EdiValue("X(3)", Path = "NAD/0/0", Mandatory = true)]
